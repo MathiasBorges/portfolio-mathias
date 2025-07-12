@@ -41,5 +41,8 @@ const GlobalStyle = createGlobalStyle`
     text-decoration: none;
     color: inherit;
   }
+  svg {
+    color: #00ffe0;
+  }
 `;
 export default GlobalStyle;

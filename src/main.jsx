@@ -10,7 +10,6 @@ createRoot(document.getElementById('root')).render(
     <GlobalStyle/>
     <MouseFollower/>
     <BackToTop/>
-    
     <App />
   </StrictMode>
 )

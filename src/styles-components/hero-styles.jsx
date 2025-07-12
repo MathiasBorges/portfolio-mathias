@@ -3,6 +3,8 @@ import React from "react";
 import styled from "styled-components";
 import { motion } from "framer-motion";
 import me_and_techs from "../assets/my_pic_in_hero.png";
+import { FiCoffee,FiSmartphone } from "react-icons/fi";
+// --- Styled Components Modernizados ---
 
 const HeroSection = styled.section`
   min-height: 100vh;
@@ -10,28 +12,12 @@ const HeroSection = styled.section`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
-  color: #ffffff;
+  background: #0f1117;
+  color: #d1d5db;
   text-align: center;
   gap: 20px;
   padding: 0 20px;
-  position: relative;
-  overflow: hidden;
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(
-      circle at 50% 50%,
-      rgba(74, 144, 226, 0.1) 0%,
-      transparent 70%
-    );
-    z-index: 0;
-  }
+  overflow-x: hidden;
 
   @media screen and (max-width: 768px) {
     gap: 25px;
@@ -44,80 +30,68 @@ const ContentWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  z-index: 2;
   max-width: 1200px;
   margin: 0 auto;
 `;
 
 const TechImage = styled(motion.img)`
-  width: 450px;
-  height: 450px;
-  object-fit: contain;
-  margin-bottom: 2px;
+  width: 400px;
+  height: 400px;
+  object-fit:contain;
   border-radius: 50%;
-  filter: drop-shadow(0 0 20px rgba(74, 144, 226, 0.5));
-  transition: all 0.3s ease;
-  z-index: 1;
-  animation: animateImage 1.5s ease-in-out infinite alternate;
-  @keyframes animateImage {
-    to {
-      filter: drop-shadow(0 0 1px rgba(74, 144, 226, 0.5));
+  filter:drop-shadow(0 0 0px white);
+
+  animation:shadowTransition 2s ease-in infinite alternate;
+  @keyframes shadowTransition{
+    to{
+      filter:drop-shadow(0 0 6px white);
     }
-  }
-  &:hover {
-    transform: scale(1.05);
-    filter: drop-shadow(0 0 30px rgba(74, 144, 226, 0.8));
   }
 
   @media screen and (max-width: 768px) {
-    width: 200px;
-    height: 200px;
-    margin-top: 0;
+    width: 180px;
+    height: 180px;
     margin-bottom: 30px;
   }
 `;
 
 const Title = styled(motion.h1)`
-  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
   line-height: 1.2;
   margin: 0;
   font-weight: 700;
-  background: linear-gradient(to right, #ffffff, #b0b0b0);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  z-index: 1;
+  color: #ffffff;
 
   span {
-    font-family: "Fira Code", monospace;
-    background: linear-gradient(to right, #4A90E2, #FF6B6B);
+    font-family: "Inter", sans-serif;
+    background: linear-gradient(90deg, #00ffe0 0%, #00bfa6 100%);
     -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     background-clip: text;
-    color: transparent;
-    text-shadow: 0 0 10px rgba(74, 144, 226, 0.5);
+    text-fill-color: transparent;
   }
 `;
 
 const Subtitle = styled(motion.p)`
-  font-size: clamp(1rem, 2vw, 1.5rem);
+  font-size: clamp(1rem, 2vw, 1.25rem);
   margin: 15px 0 0;
   max-width: 700px;
   line-height: 1.6;
-  color: #b0b0b0;
-  z-index: 1;
+  color: #a0a4ad;
 `;
 
 const HighlightText = styled(motion.span)`
   font-weight: 600;
-  color: ${(props) => props.color || "#ffffff"};
-  text-shadow: 0 0 5px ${(props) => props.shadow || "rgba(255,255,255,0.3)"};
+  color: white;
+  background-color: rgba(0, 255, 224, 0.1);
+  padding: 3px 8px;
+  border-radius: 5px;
 `;
 
-const ButtonContainer = styled.div`
+const ButtonContainer = styled(motion.div)`
   display: flex;
   gap: 20px;
   margin-top: 30px;
-  z-index: 1;
 
   @media screen and (max-width: 768px) {
     flex-direction: column;
@@ -127,42 +101,87 @@ const ButtonContainer = styled.div`
 
 const PrimaryButton = styled(motion.a)`
   padding: 12px 28px;
-  background: linear-gradient(135deg, #4a90e2, #2a5d9e);
+  background: #00bfa6;
   color: #ffffff;
   text-decoration: none;
-  border-radius: 30px;
+  border-radius: 8px;
   font-weight: 600;
   font-size: 1rem;
   border: none;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:.5em;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(74, 144, 226, 0.4);
   transition: all 0.3s ease;
-  display: inline-block;
+  box-shadow: 0 4px 15px rgba(0, 191, 166, 0.2);
 
   &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(74, 144, 226, 0.6);
+    transform: translateY(-2px);
+    background: #00ffe0;
+    box-shadow: 0 6px 20px rgba(0, 255, 224, 0.25);
+    svg{
+      color:white;
+    }
   }
 `;
 
 const SecondaryButton = styled(motion.a)`
+
   padding: 12px 28px;
   background: transparent;
-  color: #4a90e2;
+  color: #00ffe0;
   text-decoration: none;
-  border-radius: 30px;
+  border-radius: 8px;
   font-weight: 600;
   font-size: 1rem;
-  border: 2px solid #4a90e2;
+  border: 2px solid #00ffe0;
   cursor: pointer;
   transition: all 0.3s ease;
-  display: inline-block;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:.5em;
 
   &:hover {
-    background: rgba(74, 144, 226, 0.1);
-    transform: translateY(-3px);
+    background: rgba(0, 255, 224, 0.06);
+    transform: translateY(-2px);
+    svg{
+      color:white;
+    }
   }
 `;
+
+// --- Variantes de Animação ---
+
+const subtitleContainerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      delay: 0.5,
+      staggerChildren: 0.2,
+    },
+  },
+};
+
+const wordVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
+};
+
+const buttonContainerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      delay: 1.2,
+      staggerChildren: 0.2,
+    },
+  },
+};
+
+// --- Componente Hero ---
 
 const Hero = () => {
   return (
@@ -172,74 +191,62 @@ const Hero = () => {
           src={me_and_techs}
           alt="Desenvolvedor de Software"
           initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}
+          animate={{
+            opacity: 1,
+            scale: 1,
+            y: [0, -12, 0],
+          }}
+          transition={{
+            duration: 0.6,
+            y: {
+              duration: 4,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 0.6,
+            },
+          }}
         />
 
         <Title
-          initial={{ opacity: 0, y: -50 }}
+          initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
         >
           Olá, eu sou <span>Desenvolvedor de Software</span>
         </Title>
 
         <Subtitle
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.8 }}
+          variants={subtitleContainerVariants}
+          initial="hidden"
+          animate="visible"
         >
-          Criando soluções incríveis para{" "}
-          <HighlightText
-            color="#FF6B6B"
-            shadow="rgba(255,107,107,0.4)"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
-          >
-            web
-          </HighlightText>
-          ,{" "}
-          <HighlightText
-            color="#4D96FF"
-            shadow="rgba(77,150,255,0.4)"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8 }}
-          >
-            mobile
-          </HighlightText>{" "}
-          e{" "}
-          <HighlightText
-            color="#FFD166"
-            shadow="rgba(255,209,102,0.4)"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1 }}
-          >
-            desktop
-          </HighlightText>
+          Criando soluções para{" "}
+          <HighlightText variants={wordVariants}>web</HighlightText>,{" "}
+          <HighlightText variants={wordVariants}>mobile</HighlightText> e{" "}
+          <HighlightText variants={wordVariants}>desktop</HighlightText>
         </Subtitle>
 
-        <ButtonContainer>
+        <ButtonContainer
+          variants={buttonContainerVariants}
+          initial="hidden"
+          animate="visible"
+        >
           <PrimaryButton
             href="#projetos"
+            variants={wordVariants}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.2 }}
           >
+            <FiCoffee size={32}/>
             Ver Projetos
           </PrimaryButton>
           <SecondaryButton
             href="#contato"
+            variants={wordVariants}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.4 }}
           >
+            <FiSmartphone size={32}/>
             Contato
           </SecondaryButton>
         </ButtonContainer>

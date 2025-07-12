@@ -2,10 +2,11 @@ import React, { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import styled from "styled-components";
 import emailjs from "@emailjs/browser";
+import { FiSmartphone } from "react-icons/fi";
 
 const ContactSection = styled.section`
   padding: 120px 20px;
-  background: linear-gradient(to bottom, #1a1a1a, #2d2d2d);
+  background: linear-gradient(to bottom, #1a1a2d, #141425);
   color: #f5f5f5;
   position: relative;
   overflow: hidden;
@@ -34,6 +35,7 @@ const Container = styled.div`
   align-items: center;
   position: relative;
   z-index: 1;
+
 `;
 
 const SectionTitle = styled(motion.h2)`
@@ -46,17 +48,8 @@ const SectionTitle = styled(motion.h2)`
   color: transparent;
   position: relative;
   display: inline-block;
-
-  &::after {
-    content: "";
-    position: absolute;
-    bottom: -15px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100px;
-    height: 4px;
-    background: linear-gradient(to right, #4a90e2, #FF6B6B);
-    border-radius: 4px;
+   @media (max-width: 768px) {
+    font-size:1.77rem;
   }
 `;
 
@@ -161,7 +154,12 @@ const SubmitButton = styled(motion.button)`
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent
+    );
     transition: 0.5s;
   }
 
@@ -183,6 +181,7 @@ const SubmitButton = styled(motion.button)`
     &::before {
       display: none;
     }
+    
   }
 `;
 
@@ -192,12 +191,12 @@ const MessageStatus = styled(motion.p)`
   text-align: center;
   font-weight: 500;
   margin-top: 20px;
-  background: ${props => 
-    props.success ? 'rgba(40, 167, 69, 0.2)' : 'rgba(220, 53, 69, 0.2)'};
-  color: ${props => 
-    props.success ? '#28a745' : '#dc3545'};
-  border: 1px solid ${props => 
-    props.success ? 'rgba(40, 167, 69, 0.3)' : 'rgba(220, 53, 69, 0.3)'};
+  background: ${(props) =>
+    props.success ? "rgba(40, 167, 69, 0.2)" : "rgba(220, 53, 69, 0.2)"};
+  color: ${(props) => (props.success ? "#28a745" : "#dc3545")};
+  border: 1px solid
+    ${(props) =>
+      props.success ? "rgba(40, 167, 69, 0.3)" : "rgba(220, 53, 69, 0.3)"};
 `;
 
 const ContactInfo = styled(motion.div)`
@@ -285,7 +284,10 @@ const Contact = () => {
           setIsSubmitting(false);
         },
         (error) => {
-          setMessage({ text: "Erro ao enviar a mensagem. Tente novamente mais tarde.", success: false });
+          setMessage({
+            text: "Erro ao enviar a mensagem. Tente novamente mais tarde.",
+            success: false,
+          });
           setIsSubmitting(false);
         }
       );
@@ -294,14 +296,18 @@ const Contact = () => {
   return (
     <ContactSection id="contato" ref={refSection}>
       <Container>
-        <SectionTitle
-          initial={{ opacity: 0, y: -30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-        >
-          Entre em Contato
-        </SectionTitle>
-
+        <div>
+          <FiSmartphone size={32} />
+          <SectionTitle
+             style={{marginLeft:"10px"}}
+            initial={{ opacity: 0, y: -30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6 }}
+          >
+            Entre em Contato
+          </SectionTitle>
+        </div>
+        
         <ContactContent>
           <ContactForm
             ref={ref}
@@ -312,33 +318,33 @@ const Contact = () => {
           >
             <FormGroup>
               <Label htmlFor="name">Seu Nome</Label>
-              <Input 
-                type="text" 
-                id="name" 
-                name="from_name" 
-                placeholder="Como posso te chamar?" 
-                required 
+              <Input
+                type="text"
+                id="name"
+                name="from_name"
+                placeholder="Como posso te chamar?"
+                required
               />
             </FormGroup>
 
             <FormGroup>
               <Label htmlFor="email">Seu E-mail</Label>
-              <Input 
-                type="email" 
-                id="email" 
-                name="from_email" 
-                placeholder="Para onde devo responder?" 
-                required 
+              <Input
+                type="email"
+                id="email"
+                name="from_email"
+                placeholder="Para onde devo responder?"
+                required
               />
             </FormGroup>
 
             <FormGroup>
               <Label htmlFor="message">Sua Mensagem</Label>
-              <TextArea 
-                id="message" 
-                name="message" 
-                placeholder="O que gostaria de conversar?" 
-                required 
+              <TextArea
+                id="message"
+                name="message"
+                placeholder="O que gostaria de conversar?"
+                required
               />
             </FormGroup>
 
@@ -378,32 +384,32 @@ const Contact = () => {
             <div>
               <InfoTitle>Vamos conversar?</InfoTitle>
               <InfoText>
-                Estou sempre aberto a novas oportunidades, projetos interessantes ou apenas um bate-papo sobre tecnologia.
+                Estou sempre aberto a novas oportunidades, projetos
+                interessantes ou apenas um bate-papo sobre tecnologia.
               </InfoText>
             </div>
 
-
             <SocialLinks>
               <InfoTitle>Redes Sociais</InfoTitle>
-              <SocialLink 
-                href="https://github.com/MathiasBorges" 
-                target="_blank" 
+              <SocialLink
+                href="https://github.com/MathiasBorges"
+                target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.02 }}
               >
                 <i className="bi bi-github"></i>
                 <span>GitHub</span>
               </SocialLink>
-              <SocialLink 
-                href="https://www.linkedin.com/in/mathias-borges-marques/" 
-                target="_blank" 
+              <SocialLink
+                href="https://www.linkedin.com/in/mathias-borges-marques/"
+                target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.02 }}
               >
                 <i className="bi bi-linkedin"></i>
                 <span>LinkedIn</span>
               </SocialLink>
-              <SocialLink 
+              <SocialLink
                 href="mailto:mathias.borges.marques@gmail.com"
                 whileHover={{ scale: 1.02 }}
               >
