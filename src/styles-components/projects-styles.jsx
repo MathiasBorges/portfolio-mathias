@@ -16,8 +16,12 @@ import the_uiratec_video from "../assets/projetos-assets/projeto-4-theuiratec.mp
 import just_chat_image from "../assets/projetos-assets/projeto-5-justchat.png";
 import just_chat_video from "../assets/projetos-assets/projeto-5-justchat.mp4";
 import vokefy_image from "../assets/projetos-assets/projeto-7-vokefy.png";
+import vokefy_video from "../assets/projetos-assets/projeto-7-vokefy.mp4";
 import optimize_image from "../assets/projetos-assets/projeto-8-optimize.png";
 import optimize_video from "../assets/projetos-assets/projeto-8-optimize.mp4";
+import mellk_image from "../assets/projetos-assets/projeto-9-mellk.png";
+import mellk_video from "../assets/projetos-assets/projeto-9-mellk.mp4";
+
 // Importar imagem para o GerenciaME, se tiver uma
 // import gerenciame_image from "../assets/projetos-assets/projeto-6-gerenciame.png";
 
@@ -73,26 +77,26 @@ const ProjectsGrid = styled(motion.div)`
 
 // --- Styled Components do Card (Movidos para cá) ---
 const ProjectCard = styled(motion.div)`
-  background: rgba(17, 24, 39, 0.9);
-  border-radius: 16px; // Aplicar border-radius em todos os cantos
-  padding: 25px; // Aumentar um pouco o padding
+  background: #1a1a2d;
+  border-radius: 12px;
+  padding: 25px;
   text-align: left;
   transition: all 0.3s ease;
   border: 1px solid rgba(74, 144, 226, 0.2);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4); // Aumentar a sombra
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
   overflow: hidden;
   position: relative;
-  display: flex; // Usar flexbox para o layout interno
+  display: flex;
   flex-direction: column;
-  height: 100%; // Garante que todos os cards tenham a mesma altura no grid
+  height: 100%;
 
   @media (max-width: 768px) {
     margin-right: 1.25rem;
   }
 
   &:hover {
-    transform: translateY(-8px); // Efeito hover sutil
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.5); // Sombra maior no hover
+    transform: translateY(-8px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.5);
     border-color: rgba(74, 144, 226, 0.4);
   }
 `;
@@ -114,11 +118,17 @@ const ProjectMedia = styled.div`
   height: 100%;
   transition: all 0.3s ease;
 
-  img,
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+  }
+
   video {
     width: 100%;
     height: 100%;
-    object-fit: cover; // Garante que a mídia cubra o container sem distorcer
+    object-fit: contain;
     border-radius: 12px;
   }
 `;
@@ -191,7 +201,7 @@ const NextButton = styled(NavButton)`
 const ProjectTitle = styled.h3`
   font-size: 1.5rem;
   margin-bottom: 10px; // Espaço menor
-  color: #e2e8f0;
+  color: #ffffff;
   font-weight: 600;
 `;
 
@@ -241,21 +251,21 @@ const ProjectButton = styled(motion.a)`
   align-items: center;
   justify-content: center;
   padding: 10px 20px;
-  border-radius: 30px;
+  border-radius: 8px;
   font-weight: 600;
   text-decoration: none;
   transition: all 0.3s ease;
-  font-size: 0.9rem; // Fonte menor
+  font-size: 1rem;
   gap: 8px;
-  flex-grow: 1; // Permite que os botões cresçam
-  max-width: 150px; // Limita o tamanho máximo do botão
+  flex-grow: 1;
+  max-width: 150px;
 
   &:hover {
     transform: translateY(-3px);
   }
 
   i {
-    margin-right: 5px; // Espaço entre ícone e texto
+    margin-right: 5px;
   }
 `;
 
@@ -296,15 +306,37 @@ const DisabledButton = styled(ProjectButton)`
 const Projects = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px 0px" }); // Ajuste a margin conforme necessário
+  const videoRefs = useRef([]);
+
+  const handlePlay = (index) => {
+    const videoElement = videoRefs.current[index];
+    if (videoElement) {
+      if (videoElement.requestFullscreen) {
+        videoElement.requestFullscreen();
+      } else if (videoElement.webkitRequestFullscreen) { /* Safari */
+        videoElement.webkitRequestFullscreen();
+      } else if (videoElement.msRequestFullscreen) { /* IE11 */
+        videoElement.msRequestFullscreen();
+      }
+    }
+  };
 
   const projects = [
+    {
+      title: "Mellk",
+      description: "Este é um sistema de gestão comercial, desenvolvido para controlar cadastros, vendas, estoque e finanças de forma integrada",
+      media: [{ type: "image", src: mellk_image }, { type: "video", src: mellk_video }],
+      link:"#",
+      techs: ["Python", "JSON", "Tkinter"],
+      repo: "https://github.com/MathiasBorges/Mellk",
+    },
     {
       title: "Vokefy",
       description:
         "Uma ferramenta que gera currículos em PDFs de forma ágil e rápida.",
       media: [
         { type: "image", src: vokefy_image },
-        { type: "video", src: "" },
+        { type: "video", src: vokefy_video },
       ],
       link: "https://vokefy-saas.web.app/",
       techs: [
@@ -494,12 +526,13 @@ const Projects = () => {
                       ) : // Verifica se a src do video não está vazia
                       currentMedia.src ? (
                         <video
+                          ref={el => videoRefs.current[index] = el}
                           src={currentMedia.src}
                           controls // Manter controles para interatividade
                           muted // Iniciar mutado é melhor UX em listas
                           loop // Loop
                           playsInline // Essencial para autoplay em mobile
-                          // Não adicionamos ref aqui para evitar complexidade em arquivo único
+                          onPlay={() => handlePlay(index)}
                         />
                       ) : (
                         // Placeholder se o vídeo source estiver vazio

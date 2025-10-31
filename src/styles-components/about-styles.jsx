@@ -1,8 +1,8 @@
 import React, { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import styled from "styled-components";
-import my_image from "../assets/just_me.png";
-import { FiUser, FiDownload } from "react-icons/fi";
+import my_image from "../assets/just_me.jpg";
+import { FiUser, FiMail } from "react-icons/fi";
 
 // --- Styled Components Atualizados ---
 
@@ -34,7 +34,7 @@ const SectionTitle = styled(motion.h2)`
 
 const GridLayout = styled(motion.div)`
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: 1fr 1.5fr;
   align-items: center;
   gap: 60px;
   width: 100%;
@@ -110,10 +110,6 @@ const ContactButton = styled(motion.a)`
     background: #00c2ff;
     transform: translateY(-2px);
     box-shadow: 0 6px 25px rgba(0, 170, 255, 0.35);
-
-    svg {
-      transform: translateY(1px) rotate(5deg);
-    }
   }
 
   svg {
@@ -182,7 +178,7 @@ const About = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <FiDownload /> Entrar em Contato
+              <FiMail /> Entrar em Contato
             </ContactButton>
           </TextContent>
         </GridLayout>

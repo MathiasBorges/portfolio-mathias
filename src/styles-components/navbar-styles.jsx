@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import styled, { ThemeProvider, createGlobalStyle } from "styled-components";
+import { FiHome, FiUser, FiBriefcase, FiMail } from "react-icons/fi";
 
 // Theme com nova identidade visual escura
 const theme = {
@@ -27,9 +28,10 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 const navItems = [
-  { href: "#sobre", label: "Sobre" },
-  { href: "#projetos", label: "Projetos" },
-  { href: "#contato", label: "Contato" },
+  { href: "#home", label: "Home", icon: <FiHome /> },
+  { href: "#sobre", label: "Sobre", icon: <FiUser /> },
+  { href: "#projetos", label: "Projetos", icon: <FiBriefcase /> },
+  { href: "#contato", label: "Contato", icon: <FiMail /> },
 ];
 
 // --- Styled Components Atualizados ---
@@ -86,7 +88,11 @@ const NavLinksDesktop = styled.div`
 `;
 
 const NavLink = styled(motion.a)`
-  color: ${({ theme }) => theme.colors.secondaryText};
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: ${({ theme, active }) => (active ? theme.colors.primary : theme.colors.secondaryText)};
+  background-color: ${({ theme, active }) => (active ? 'rgba(0, 255, 224, 0.1)' : 'transparent')};
   text-decoration: none;
   font-weight: 500;
   font-size: 1rem;
@@ -97,7 +103,7 @@ const NavLink = styled(motion.a)`
   &:hover,
   &:focus {
     color: ${({ theme }) => theme.colors.primary};
-    background: rgba(56, 189, 248, 0.08);
+    background-color: rgba(0, 255, 224, 0.1);
   }
 `;
 
@@ -149,7 +155,10 @@ const MobileMenuContainer = styled(motion.div)`
 `;
 
 const MobileNavLink = styled(motion.a)`
-  color: ${({ theme }) => theme.colors.text};
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  color: ${({ theme, active }) => (active ? theme.colors.primary : theme.colors.text)};
   text-decoration: none;
   font-size: 1.2rem;
   font-weight: 500;
@@ -185,6 +194,24 @@ const mobileLinkVariants = {
 // --- Componente Principal ---
 const NavbarComponent = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [activeLink, setActiveLink] = useState("#home");
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = navItems.map(item => document.getElementById(item.href.substring(1)));
+      const scrollPosition = window.scrollY + 150; // Offset for better accuracy
+
+      for (const section of sections) {
+        if (section && scrollPosition >= section.offsetTop && scrollPosition < section.offsetTop + section.offsetHeight) {
+          setActiveLink(`#${section.id}`);
+          break;
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     document.body.classList.toggle("no-scroll", isOpen);
@@ -203,7 +230,7 @@ const NavbarComponent = () => {
         transition={{ duration: 0.4, ease: "easeOut" }}
         aria-label="Barra de navegação"
       >
-        <Logo href="#">Dev Mathias</Logo>
+        <Logo href="#home">Dev Mathias</Logo>
 
         <NavActionContainer>
           <NavLinksDesktop>
@@ -211,9 +238,11 @@ const NavbarComponent = () => {
               <NavLink
                 key={item.href}
                 href={item.href}
+                active={activeLink === item.href}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
+                {item.icon}
                 {item.label}
               </NavLink>
             ))}
@@ -260,12 +289,14 @@ const NavbarComponent = () => {
                 <MobileNavLink
                   key={item.href}
                   href={item.href}
+                  active={activeLink === item.href}
                   variants={mobileLinkVariants}
                   onClick={closeMenu}
                   whileHover={{ x: 5 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  {item.label}
+                  {item.icon}
+                  <span>{item.label}</span>
                 </MobileNavLink>
               ))}
             </MobileMenuContainer>

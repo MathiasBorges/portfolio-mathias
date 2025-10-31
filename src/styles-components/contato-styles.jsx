@@ -55,7 +55,7 @@ const SectionTitle = styled(motion.h2)`
 
 const ContactContent = styled(motion.div)`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1.5fr 1fr;
   gap: 50px;
   width: 100%;
   max-width: 1000px;
@@ -92,17 +92,17 @@ const Label = styled.label`
 const Input = styled.input`
   padding: 15px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 1rem;
-  background: rgba(20, 20, 20, 0.5);
-  color: #f5f5f5;
+  background: #1a1a2d;
+  color: #e2e8f0;
   transition: all 0.3s ease;
 
   &:focus {
     border-color: #4a90e2;
     box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.3);
     outline: none;
-    background: rgba(30, 30, 30, 0.8);
+    background: #1c1c3a;
   }
 
   &::placeholder {
@@ -113,10 +113,10 @@ const Input = styled.input`
 const TextArea = styled.textarea`
   padding: 15px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 1rem;
-  background: rgba(20, 20, 20, 0.5);
-  color: #f5f5f5;
+  background: #1a1a2d;
+  color: #e2e8f0;
   resize: vertical;
   min-height: 150px;
   transition: all 0.3s ease;
@@ -125,7 +125,7 @@ const TextArea = styled.textarea`
     border-color: #4a90e2;
     box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.3);
     outline: none;
-    background: rgba(30, 30, 30, 0.8);
+    background: #1c1c3a;
   }
 
   &::placeholder {
@@ -187,13 +187,13 @@ const SubmitButton = styled(motion.button)`
 
 const MessageStatus = styled(motion.p)`
   padding: 15px;
-  border-radius: 8px;
+  border-radius: 12px;
   text-align: center;
   font-weight: 500;
   margin-top: 20px;
   background: ${(props) =>
-    props.success ? "rgba(40, 167, 69, 0.2)" : "rgba(220, 53, 69, 0.2)"};
-  color: ${(props) => (props.success ? "#28a745" : "#dc3545")};
+    props.success ? "#28a745" : "#dc3545"};
+  color: #ffffff;
   border: 1px solid
     ${(props) =>
       props.success ? "rgba(40, 167, 69, 0.3)" : "rgba(220, 53, 69, 0.3)"};

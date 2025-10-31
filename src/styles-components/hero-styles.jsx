@@ -2,7 +2,8 @@
 import React from "react";
 import styled from "styled-components";
 import { motion } from "framer-motion";
-import me_and_techs from "../assets/my_pic_in_hero.png";
+import just_me_image from "../assets/just_me.jpg";
+import hero_background from "../assets/my_pic_in_hero2.png";
 import { FiCoffee,FiSmartphone } from "react-icons/fi";
 // --- Styled Components Modernizados ---
 
@@ -34,24 +35,59 @@ const ContentWrapper = styled.div`
   margin: 0 auto;
 `;
 
-const TechImage = styled(motion.img)`
-  width: 400px;
-  height: 400px;
-  object-fit:contain;
-  border-radius: 50%;
-  filter:drop-shadow(0 0 0px white);
+const ImageContainer = styled(motion.div)`
+  position: relative;
+  width: 450px;
+  height: 450px;
 
-  animation:shadowTransition 2s ease-in infinite alternate;
-  @keyframes shadowTransition{
-    to{
-      filter:drop-shadow(0 0 6px white);
+  @media screen and (max-width: 768px) {
+    width: 280px;
+    height: 280px;
+    margin-bottom: 30px;
+  }
+`;
+
+const BackgroundImage = styled(motion.img)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 0px black);
+  scale: 1.5;
+  animation: shadowTransition 2s ease-in infinite alternate;
+  @keyframes shadowTransition {
+    to {
+      filter: drop-shadow(0 0 6px black);
+    }
+  }
+`;
+
+const ProfileImage = styled(motion.img)`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: 0 0 15px rgba(0, 255, 224, 0.3), 0 0 25px rgba(0, 255, 224, 0.2);
+  animation: pulseGlow 3s ease-in-out infinite alternate;
+
+  @keyframes pulseGlow {
+    from {
+      box-shadow: 0 0 15px rgba(0, 255, 224, 0.3), 0 0 25px rgba(0, 255, 224, 0.2);
+    }
+    to {
+      box-shadow: 0 0 25px rgba(0, 255, 224, 0.5), 0 0 40px rgba(0, 255, 224, 0.3);
     }
   }
 
   @media screen and (max-width: 768px) {
-    width: 180px;
-    height: 180px;
-    margin-bottom: 30px;
+    width: 120px;
+    height: 120px;
   }
 `;
 
@@ -64,11 +100,19 @@ const Title = styled(motion.h1)`
 
   span {
     font-family: "Inter", sans-serif;
-    background: linear-gradient(90deg, #00ffe0 0%, #00bfa6 100%);
+    background: linear-gradient(90deg, #00ffe0 0%, #00bfa6 50%, #00ffe0 100%);
+    background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     text-fill-color: transparent;
+    animation: gradient-flow 4s linear infinite;
+
+    @keyframes gradient-flow {
+        to {
+            background-position: -200% center;
+        }
+    }
   }
 `;
 
@@ -77,7 +121,15 @@ const Subtitle = styled(motion.p)`
   margin: 15px 0 0;
   max-width: 700px;
   line-height: 1.6;
-  color: #a0a4ad;
+  background: linear-gradient(90deg, #00ffe0 0%, #00bfa6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+
+  @media screen and (max-width: 768px) {
+    line-height: 1.8;
+  }
 `;
 
 const HighlightText = styled(motion.span)`
@@ -187,25 +239,35 @@ const Hero = () => {
   return (
     <HeroSection id="home">
       <ContentWrapper>
-        <TechImage
-          src={me_and_techs}
-          alt="Desenvolvedor de Software"
+        <ImageContainer
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{
             opacity: 1,
             scale: 1,
-            y: [0, -12, 0],
           }}
           transition={{
             duration: 0.6,
-            y: {
+          }}
+        >
+          <BackgroundImage
+            src={hero_background}
+            alt="Tech background"
+            animate={{
+              y: [0, -12, 0],
+            }}
+            
+            transition={{
               duration: 4,
               repeat: Infinity,
               ease: "easeInOut",
               delay: 0.6,
-            },
-          }}
-        />
+            }}
+          />
+          <ProfileImage
+            src={just_me_image}
+            alt="Desenvolvedor de Software"
+          />
+        </ImageContainer>
 
         <Title
           initial={{ opacity: 0, y: -20 }}
