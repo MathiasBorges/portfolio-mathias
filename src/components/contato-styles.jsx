@@ -1,8 +1,8 @@
 import React, { useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 import styled from "styled-components";
 import emailjs from "@emailjs/browser";
-import { FiSmartphone } from "react-icons/fi";
+import { FiSmartphone, FiCheckCircle, FiAlertCircle } from "react-icons/fi";
 
 const ContactSection = styled.section`
   padding: 120px 20px;
@@ -21,7 +21,9 @@ const ContactSection = styled.section`
     left: 0;
     width: 100%;
     height: 100%;
-    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234A90E2' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    background: 
+      radial-gradient(circle at 20% 80%, rgba(0, 255, 224, 0.03) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(0, 191, 166, 0.03) 0%, transparent 50%);
     z-index: 0;
   }
 `;
@@ -38,114 +40,127 @@ const Container = styled.div`
 
 `;
 
-const SectionTitle = styled(motion.h2)`
-  font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: 700;
+const TitleContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
   margin-bottom: 60px;
-  background: linear-gradient(to right, #f5f5f5, #b0b0b0);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  position: relative;
-  display: inline-block;
-   @media (max-width: 768px) {
-    font-size:1.77rem;
+  
+  svg {
+    color: #00ffe0;
   }
+`;
+
+const SectionTitle = styled(motion.h2)`
+  font-size: clamp(2rem, 5vw, 2.6rem);
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
 `;
 
 const ContactContent = styled(motion.div)`
   display: grid;
-  grid-template-columns: 1.5fr 1fr;
-  gap: 50px;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 40px;
   width: 100%;
-  max-width: 1000px;
+  max-width: 1100px;
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
+    gap: 32px;
   }
 `;
 
 const ContactForm = styled(motion.form)`
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  background: rgba(30, 30, 30, 0.8);
+  gap: 24px;
+  background: linear-gradient(145deg, rgba(26, 26, 45, 0.9), rgba(20, 20, 37, 0.8));
   padding: 40px;
   border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(5px);
-  border: 1px solid rgba(74, 144, 226, 0.2);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 255, 224, 0.1);
+  position: relative;
+  
 `;
 
 const FormGroup = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 `;
 
 const Label = styled.label`
-  font-size: 1rem;
-  color: #b0b0b0;
+  font-size: 0.9rem;
+  color: #00ffe0;
+  font-weight: 500;
   text-align: left;
 `;
 
-const Input = styled.input`
-  padding: 15px;
+const Input = styled(motion.input)`
+  padding: 16px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   font-size: 1rem;
-  background: #1a1a2d;
+  background: rgba(26, 26, 45, 0.6);
   color: #e2e8f0;
   transition: all 0.3s ease;
 
   &:focus {
-    border-color: #4a90e2;
-    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.3);
+    border-color: #00ffe0;
+    box-shadow: 0 0 0 3px rgba(0, 255, 224, 0.2);
     outline: none;
-    background: #1c1c3a;
+    background: rgba(26, 26, 45, 0.8);
   }
 
   &::placeholder {
-    color: #666;
+    color: #888;
   }
 `;
 
-const TextArea = styled.textarea`
-  padding: 15px;
+const TextArea = styled(motion.textarea)`
+  padding: 16px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   font-size: 1rem;
-  background: #1a1a2d;
+  background: rgba(26, 26, 45, 0.6);
   color: #e2e8f0;
   resize: vertical;
-  min-height: 150px;
+  min-height: 120px;
   transition: all 0.3s ease;
+  font-family: inherit;
 
   &:focus {
-    border-color: #4a90e2;
-    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.3);
+    border-color: #00ffe0;
+    box-shadow: 0 0 0 3px rgba(0, 255, 224, 0.2);
     outline: none;
-    background: #1c1c3a;
+    background: rgba(26, 26, 45, 0.8);
   }
 
   &::placeholder {
-    color: #666;
+    color: #888;
   }
 `;
 
 const SubmitButton = styled(motion.button)`
-  padding: 15px;
+  padding: 16px 24px;
   font-size: 1rem;
-  background: linear-gradient(135deg, #4a90e2, #2a5d9e);
-  color: #f5f5f5;
+  background: linear-gradient(135deg, #00ffe0, #00bfa6);
+  color: #0f0f23;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: pointer;
-  font-weight: 600;
+  font-weight: 700;
   transition: all 0.3s ease;
-  margin-top: 10px;
+  margin-top: 8px;
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 56px;
 
   &::before {
     content: "";
@@ -157,15 +172,16 @@ const SubmitButton = styled(motion.button)`
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(255, 255, 255, 0.2),
+      rgba(255, 255, 255, 0.3),
       transparent
     );
     transition: 0.5s;
   }
 
-  &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(74, 144, 226, 0.6);
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(0, 255, 224, 0.4);
+    background: linear-gradient(135deg, #00bfa6, #00ffe0);
 
     &::before {
       left: 100%;
@@ -173,7 +189,8 @@ const SubmitButton = styled(motion.button)`
   }
 
   &:disabled {
-    background: #666;
+    background: rgba(100, 100, 100, 0.3);
+    color: #666;
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
@@ -181,35 +198,42 @@ const SubmitButton = styled(motion.button)`
     &::before {
       display: none;
     }
-    
   }
 `;
 
-const MessageStatus = styled(motion.p)`
-  padding: 15px;
+const MessageStatus = styled(motion.div)`
+  padding: 16px;
   border-radius: 12px;
   text-align: center;
   font-weight: 500;
-  margin-top: 20px;
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   background: ${(props) =>
-    props.success ? "#28a745" : "#dc3545"};
-  color: #ffffff;
-  border: 1px solid
-    ${(props) =>
-      props.success ? "rgba(40, 167, 69, 0.3)" : "rgba(220, 53, 69, 0.3)"};
+    props.success 
+      ? "linear-gradient(135deg, rgba(0, 255, 224, 0.1), rgba(0, 191, 166, 0.1))" 
+      : "linear-gradient(135deg, rgba(220, 53, 69, 0.1), rgba(185, 28, 28, 0.1))"};
+  color: ${(props) => props.success ? "#00ffe0" : "#ff6b6b"};
+  border: 1px solid ${(props) =>
+    props.success ? "rgba(0, 255, 224, 0.3)" : "rgba(220, 53, 69, 0.3)"};
 `;
 
 const ContactInfo = styled(motion.div)`
   display: flex;
   flex-direction: column;
-  gap: 30px;
-  background: rgba(30, 30, 30, 0.8);
+  gap: 32px;
+  background: linear-gradient(145deg, rgba(26, 26, 45, 0.9), rgba(20, 20, 37, 0.8));
   padding: 40px;
   border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(5px);
-  border: 1px solid rgba(74, 144, 226, 0.2);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 255, 224, 0.1);
   align-self: flex-start;
+  position: relative;
+  
+ 
 
   @media (max-width: 768px) {
     align-self: center;
@@ -217,44 +241,48 @@ const ContactInfo = styled(motion.div)`
 `;
 
 const InfoTitle = styled.h3`
-  font-size: 1.5rem;
-  margin-bottom: 10px;
-  color: #f5f5f5;
+  font-size: 1.4rem;
+  margin-bottom: 12px;
+  color: #ffffff;
+  font-weight: 600;
 `;
 
 const InfoText = styled.p`
   font-size: 1rem;
-  color: #b0b0b0;
-  line-height: 1.6;
+  color: #a0a4ad;
+  line-height: 1.7;
 `;
 
 const SocialLinks = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 `;
 
 const SocialLink = styled(motion.a)`
   display: flex;
   align-items: center;
-  gap: 15px;
-  color: #f5f5f5;
+  gap: 16px;
+  color: #e2e8f0;
   text-decoration: none;
-  font-size: 1.1rem;
-  padding: 12px 20px;
-  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 16px 20px;
+  border-radius: 12px;
   background: rgba(255, 255, 255, 0.05);
   transition: all 0.3s ease;
   border: 1px solid rgba(255, 255, 255, 0.1);
 
   &:hover {
-    background: rgba(74, 144, 226, 0.2);
-    transform: translateX(5px);
+    background: rgba(0, 255, 224, 0.1);
+    border-color: rgba(0, 255, 224, 0.3);
+    transform: translateX(8px);
   }
 
   i {
-    font-size: 1.5rem;
-    color: #4a90e2;
+    font-size: 1.4rem;
+    color: #00ffe0;
+    transition: all 0.3s ease;
   }
 `;
 
@@ -282,6 +310,7 @@ const Contact = () => {
           setMessage({ text: "Mensagem enviada com sucesso!", success: true });
           ref.current.reset();
           setIsSubmitting(false);
+          setTimeout(() => setMessage(null), 5000); // Limpa mensagem após 5s
         },
         (error) => {
           setMessage({
@@ -296,19 +325,28 @@ const Contact = () => {
   return (
     <ContactSection id="contato" ref={refSection}>
       <Container>
-        <div>
-          <FiSmartphone size={32} />
+        <TitleContainer>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={isInView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ duration: 0.5 }}
+          >
+            <FiSmartphone size={32} />
+          </motion.div>
           <SectionTitle
-             style={{marginLeft:"10px"}}
             initial={{ opacity: 0, y: -30 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
           >
             Entre em Contato
           </SectionTitle>
-        </div>
+        </TitleContainer>
         
-        <ContactContent>
+        <ContactContent
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
           <ContactForm
             ref={ref}
             onSubmit={sendEmail}
@@ -324,6 +362,7 @@ const Contact = () => {
                 name="from_name"
                 placeholder="Como posso te chamar?"
                 required
+                whileFocus={{ scale: 1.02, borderColor: "#00ffe0" }}
               />
             </FormGroup>
 
@@ -335,6 +374,7 @@ const Contact = () => {
                 name="from_email"
                 placeholder="Para onde devo responder?"
                 required
+                whileFocus={{ scale: 1.02, borderColor: "#00ffe0" }}
               />
             </FormGroup>
 
@@ -345,6 +385,7 @@ const Contact = () => {
                 name="message"
                 placeholder="O que gostaria de conversar?"
                 required
+                whileFocus={{ scale: 1.02, borderColor: "#00ffe0" }}
               />
             </FormGroup>
 
@@ -365,15 +406,19 @@ const Contact = () => {
               )}
             </SubmitButton>
 
-            {message && (
-              <MessageStatus
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                success={message.success}
-              >
-                {message.text}
-              </MessageStatus>
-            )}
+            <AnimatePresence>
+              {message && (
+                <MessageStatus
+                  initial={{ opacity: 0, height: 0, y: 20 }}
+                  animate={{ opacity: 1, height: "auto", y: 0 }}
+                  exit={{ opacity: 0, height: 0, y: -20 }}
+                  success={message.success}
+                >
+                  {message.success ? <FiCheckCircle size={20} /> : <FiAlertCircle size={20} />}
+                  {message.text}
+                </MessageStatus>
+              )}
+            </AnimatePresence>
           </ContactForm>
 
           <ContactInfo

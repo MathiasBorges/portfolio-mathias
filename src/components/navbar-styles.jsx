@@ -1,8 +1,8 @@
 // NavbarComponent.jsx
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import styled, { ThemeProvider, createGlobalStyle } from "styled-components";
-import { FiHome, FiUser, FiBriefcase, FiMail } from "react-icons/fi";
+import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
+import styled, { ThemeProvider, createGlobalStyle, keyframes } from "styled-components";
+import { FiHome, FiUser, FiCode, FiBriefcase, FiMail } from "react-icons/fi";
 
 // Theme com nova identidade visual escura
 const theme = {
@@ -10,8 +10,8 @@ const theme = {
     primary: "#00ffe0",
     text: "#e2e8f0",
     secondaryText: "#a0a4ad",
-    background: "#0f1117",
-    borderLight: "#1a1d27",
+    background: "rgba(15, 17, 23, 0.8)", // Mais transparente para glassmorphism
+    borderLight: "rgba(255, 255, 255, 0.1)",
     overlay: "rgba(0, 0, 0, 0.6)"
   },
   breakpoints: {
@@ -30,17 +30,24 @@ const GlobalStyle = createGlobalStyle`
 const navItems = [
   { href: "#home", label: "Home", icon: <FiHome /> },
   { href: "#sobre", label: "Sobre", icon: <FiUser /> },
+  { href: "#skills", label: "Skills", icon: <FiCode /> },
   { href: "#projetos", label: "Projetos", icon: <FiBriefcase /> },
   { href: "#contato", label: "Contato", icon: <FiMail /> },
 ];
 
 // --- Styled Components Atualizados ---
-const NavbarContainer = styled(motion.nav)`
+const NavbarWrapper = styled.div`
   position: fixed;
-  top: 1.2rem;
+  top: 0;
   left: 0;
   right: 0;
-  margin: 0 auto;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  padding-top: 1.2rem;
+`;
+
+const NavbarContainer = styled(motion.nav)`
   width: 92%;
   max-width: 1180px;
   background: ${({ theme }) => theme.colors.background};
@@ -52,9 +59,30 @@ const NavbarContainer = styled(motion.nav)`
   align-items: center;
   border-radius: ${({ theme }) => theme.borderRadius};
   border: 1px solid ${({ theme }) => theme.colors.borderLight};
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(12px);
-  z-index: 1000;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  position: relative;
+  overflow: hidden;
+`;
+
+const ProgressBar = styled(motion.div)`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: ${({ theme }) => theme.colors.primary};
+  transform-origin: 0%;
+`;
+
+const glitch = keyframes`
+  0% { transform: translate(0) }
+  20% { transform: translate(-2px, 2px) }
+  40% { transform: translate(-2px, -2px) }
+  60% { transform: translate(2px, 2px) }
+  80% { transform: translate(2px, -2px) }
+  100% { transform: translate(0) }
 `;
 
 const Logo = styled(motion.a)`
@@ -64,10 +92,13 @@ const Logo = styled(motion.a)`
   text-decoration: none;
   color: ${({ theme }) => theme.colors.primary};
   letter-spacing: 1px;
+  position: relative;
   transition: color 0.3s ease;
 
   &:hover {
-    color: #38bdf8;
+    color: #fff;
+    text-shadow: 2px 2px #ff00c1, -2px -2px #00fff9;
+    animation: ${glitch} 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
   }
 `;
 
@@ -138,6 +169,7 @@ const Overlay = styled(motion.div)`
   height: 100vh;
   background: ${({ theme }) => theme.colors.overlay};
   z-index: 999;
+  backdrop-filter: blur(4px);
 `;
 
 const MobileMenuContainer = styled(motion.div)`
@@ -146,12 +178,13 @@ const MobileMenuContainer = styled(motion.div)`
   right: 0;
   width: min(75%, 300px);
   height: 100vh;
-  background: ${({ theme }) => theme.colors.background};
+  background: #0f1117;
   padding: calc(${({ theme }) => theme.navbarHeight} + 1.8rem) 1.8rem;
   display: flex;
   flex-direction: column;
   border-left: 1px solid ${({ theme }) => theme.colors.borderLight};
   z-index: 1000;
+  box-shadow: -10px 0 30px rgba(0,0,0,0.5);
 `;
 
 const MobileNavLink = styled(motion.a)`
@@ -178,11 +211,23 @@ const MobileNavLink = styled(motion.a)`
 const mobileMenuVariants = {
   open: {
     x: 0,
-    transition: { type: "spring", stiffness: 300, damping: 30 }
+    transition: { 
+      type: "spring", 
+      stiffness: 300, 
+      damping: 30,
+      staggerChildren: 0.1,
+      delayChildren: 0.2
+    }
   },
   closed: {
     x: "100%",
-    transition: { type: "spring", stiffness: 400, damping: 40 }
+    transition: { 
+      type: "spring", 
+      stiffness: 400, 
+      damping: 40,
+      staggerChildren: 0.05,
+      staggerDirection: -1
+    }
   }
 };
 
@@ -195,11 +240,17 @@ const mobileLinkVariants = {
 const NavbarComponent = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeLink, setActiveLink] = useState("#home");
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
 
   useEffect(() => {
     const handleScroll = () => {
       const sections = navItems.map(item => document.getElementById(item.href.substring(1)));
-      const scrollPosition = window.scrollY + 150; // Offset for better accuracy
+      const scrollPosition = window.scrollY + 120;
 
       for (const section of sections) {
         if (section && scrollPosition >= section.offsetTop && scrollPosition < section.offsetTop + section.offsetHeight) {
@@ -224,48 +275,51 @@ const NavbarComponent = () => {
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyle />
-      <NavbarContainer
-        initial={{ y: -80, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
-        aria-label="Barra de navegação"
-      >
-        <Logo href="#home">Dev Mathias</Logo>
+      <NavbarWrapper>
+        <NavbarContainer
+          initial={{ y: -80, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          aria-label="Barra de navegação"
+        >
+          <ProgressBar style={{ scaleX }} />
+          <Logo href="#home">Dev Mathias</Logo>
 
-        <NavActionContainer>
-          <NavLinksDesktop>
-            {navItems.map((item) => (
-              <NavLink
-                key={item.href}
-                href={item.href}
-                active={activeLink === item.href}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {item.icon}
-                {item.label}
-              </NavLink>
-            ))}
-          </NavLinksDesktop>
+          <NavActionContainer>
+            <NavLinksDesktop>
+              {navItems.map((item) => (
+                <NavLink
+                  key={item.href}
+                  href={item.href}
+                  active={activeLink === item.href}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {item.icon}
+                  {item.label}
+                </NavLink>
+              ))}
+            </NavLinksDesktop>
 
-          <MobileMenuButton
-            onClick={toggleMenu}
-            whileTap={{ scale: 0.9 }}
-            aria-label={isOpen ? "Fechar menu" : "Abrir menu"}
-            aria-expanded={isOpen}
-          >
-            {isOpen ? (
-              <svg className="icon" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                <path d="M6 6l12 12M6 18L18 6" />
-              </svg>
-            ) : (
-              <svg className="icon" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                <path d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            )}
-          </MobileMenuButton>
-        </NavActionContainer>
-      </NavbarContainer>
+            <MobileMenuButton
+              onClick={toggleMenu}
+              whileTap={{ scale: 0.9 }}
+              aria-label={isOpen ? "Fechar menu" : "Abrir menu"}
+              aria-expanded={isOpen}
+            >
+              {isOpen ? (
+                <svg className="icon" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path d="M6 6l12 12M6 18L18 6" />
+                </svg>
+              ) : (
+                <svg className="icon" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </MobileMenuButton>
+          </NavActionContainer>
+        </NavbarContainer>
+      </NavbarWrapper>
 
       <AnimatePresence>
         {isOpen && (

@@ -4,14 +4,26 @@ import React, { useState, useEffect } from "react";
 
 const Mouse = styled(motion.div)`
   position: fixed;
-  width: 1.2rem;
-  height: 1.2rem;
+  width: 10px;
+  height: 10px;
+  background-color: #00ffe0;
   border-radius: 50%;
   pointer-events: none;
   z-index: 9999;
   transform: translate(-50%, -50%);
-  background: transparent;
-  border: 2px solid #4A90E2;
+  mix-blend-mode: difference;
+`;
+
+const MouseRing = styled(motion.div)`
+  position: fixed;
+  width: 40px;
+  height: 40px;
+  border: 2px solid rgba(0, 255, 224, 0.5);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s, height 0.2s, background-color 0.2s;
 `;
 
 const MouseFollower = () => {
@@ -23,36 +35,50 @@ const MouseFollower = () => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
 
-    const handleClick = () => {
-      setIsClicked(true);
-      setTimeout(() => setIsClicked(false), 150);
-    };
+    const handleMouseDown = () => setIsClicked(true);
+    const handleMouseUp = () => setIsClicked(false);
 
     window.addEventListener("mousemove", updateMousePosition);
-    window.addEventListener("click", handleClick);
+    window.addEventListener("mousedown", handleMouseDown);
+    window.addEventListener("mouseup", handleMouseUp);
 
     return () => {
       window.removeEventListener("mousemove", updateMousePosition);
-      window.removeEventListener("click", handleClick);
+      window.removeEventListener("mousedown", handleMouseDown);
+      window.removeEventListener("mouseup", handleMouseUp);
     };
   }, []);
 
   return (
-    <Mouse
-      animate={{
-        x: mousePosition.x,
-        y: mousePosition.y,
-        scale: isClicked ? 1.2 : 1,
-        opacity: 0.7,
-      }}
-      transition={{
-        type: "spring",
-        stiffness: 600,
-        damping: 40,
-        scale: { duration: 0.15 },
-      }}
-      aria-hidden="true"
-    />
+    <>
+      <Mouse
+        animate={{
+          x: mousePosition.x,
+          y: mousePosition.y,
+          scale: isClicked ? 0.5 : 1,
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 1500,
+          damping: 100,
+          mass: 0.1
+        }}
+      />
+      <MouseRing
+        animate={{
+          x: mousePosition.x,
+          y: mousePosition.y,
+          scale: isClicked ? 0.8 : 1,
+          backgroundColor: isClicked ? "rgba(0, 255, 224, 0.1)" : "transparent"
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 100,
+          damping: 20,
+          mass: 1
+        }}
+      />
+    </>
   );
 };
 

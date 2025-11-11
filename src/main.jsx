@@ -1,9 +1,9 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './styles-components/global-styles.jsx'
+import './components/global-styles.jsx'
 import App from './App.jsx'
-import GlobalStyle from './styles-components/global-styles.jsx'
-import { BackToTop } from './styles-components/scroll-styles.jsx'
+import GlobalStyle from './components/global-styles.jsx'
+import { BackToTop } from './components/scroll-styles.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
