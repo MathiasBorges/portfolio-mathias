@@ -2,11 +2,56 @@
 <html lang="pt-br">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="src/assets/me.jpeg" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Desenvolvedor Mathias</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico" />
+    <!-- Mantém compatibilidade com o favicon atual, se existir -->
+    <link rel="icon" type="image/jpeg" href="/src/assets/me.jpeg" />
+
+    <!-- Preconnect para fontes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Ícones -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- SEO básico -->
+    <title>Mathias Borges — Desenvolvedor de Software</title>
+    <meta name="description" content="Portfólio de Mathias Borges, desenvolvedor de software. Projetos em Web, Mobile e Desktop com React, Node.js, Python e Firebase." />
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="Mathias Borges" />
+    <meta name="theme-color" content="#0f1117" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Mathias Borges — Desenvolvedor de Software" />
+    <meta property="og:description" content="Conheça meus projetos e habilidades em desenvolvimento Web, Mobile e Desktop." />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <!-- Dica: configure uma imagem OG em /public/og-image.jpg -->
+    <!-- <meta property="og:image" content="/og-image.jpg" /> -->
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Mathias Borges — Desenvolvedor de Software" />
+    <meta name="twitter:description" content="Portfólio de projetos e habilidades em desenvolvimento de software." />
+
+    <!-- JSON-LD: Perfil Profissional -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Mathias Borges",
+        "jobTitle": "Desenvolvedor de Software",
+        "knowsAbout": ["React", "Node.js", "Python", "Firebase", "Styled Components", "Framer Motion"],
+        "sameAs": [
+          "https://github.com/MathiasBorges",
+          "https://www.linkedin.com/in/mathias-borges-marques/"
+        ],
+        "email": "mailto:mathias.borges.marques@gmail.com"
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

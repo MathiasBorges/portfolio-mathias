@@ -1,0 +1,6 @@
+# robots.txt for dev-mathias
+User-agent: *
+Allow: /
+
+# Dica: adicione seu sitemap quando tiver a URL pública definida
+# Sitemap: https://SEU-DOMINIO/sitemap.xml
