@@ -1,12 +1,19 @@
-# React + Vite
+# Dev Mathias Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Configuracao do EmailJS
 
-Currently, two official plugins are available:
+Para o formulario de contato funcionar, crie o arquivo `.env` na raiz do projeto com as variaveis abaixo (pode copiar de `.env.example`):
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```bash
+VITE_EMAILJS_SERVICE_ID=service_xxxxxxx
+VITE_EMAILJS_TEMPLATE_ID=template_xxxxxxx
+VITE_EMAILJS_PUBLIC_KEY=xxxxxxxxxxxxxxxx
+```
 
-## Expanding the ESLint configuration
+Depois reinicie o servidor (`npm run dev`).
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Se aparecer erro `412 (Precondition Failed)`, confira no painel do EmailJS:
+
+1. Se os IDs e a chave publica estao corretos.
+2. Se o template usado esta ativo.
+3. Se o dominio/origem atual (ex.: localhost) esta permitido nas configuracoes de seguranca da conta.

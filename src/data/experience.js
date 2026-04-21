@@ -1,0 +1,115 @@
+export const experienceData = {
+  work: [
+    {
+      id: "fiea",
+      role: "Desenvolvedor de Software",
+      company: "Sistema FIEA — SESI, SENAI, FIEA & IEL",
+      location: "Maceió, AL",
+      period: "Dezembro 2025 – Presente",
+      current: true,
+      description: [
+        "Desenvolvimento e manutenção de sistemas corporativos com Next.js, Node.js e SQL Server.",
+        "Configuração e gerenciamento de serviços em contêineres Docker e armazenamento MinIO.",
+      ],
+      techs: ["Next.js", "Node.js", "SQL Server", "Docker", "MinIO"],
+    },
+    {
+      id: "previda",
+      role: "Assistente Administrativo",
+      company: "Previda",
+      location: "Maceió, AL",
+      period: "Julho 2024 – Presente",
+      current: true,
+      description: [
+        "Criação de dashboards e relatórios gerenciais automatizados para controle de custos e operações.",
+        "Consolidação e análise de dados de frotas e suprimentos para suporte à tomada de decisão estratégica.",
+        "Otimização de processos internos e gestão de fornecedores, reduzindo gargalos administrativos.",
+      ],
+      techs: ["Excel", "Análise de Dados", "Automação"],
+    },
+    {
+      id: "parque",
+      role: "Helpdesk Freelance",
+      company: "Grupo Parque das Flores",
+      location: "Maceió, AL",
+      period: "Abril 2026 – Presente",
+      current: true,
+      description: [
+        "Suporte técnico a usuários, gestão de chamados e manutenção de infraestrutura de TI.",
+      ],
+      techs: ["Suporte TI", "Redes", "Hardware"],
+    },
+    {
+      id: "zyntry",
+      role: "Desenvolvedor Mobile",
+      company: "Zyntry",
+      period: "Jun 2025",
+      current: false,
+      description: [
+        "Desenvolvimento de aplicativos multiplataforma (React Native) com foco em usabilidade e performance.",
+      ],
+      techs: ["React Native", "JavaScript", "Mobile"],
+    },
+    {
+      id: "workana",
+      role: "Desenvolvedor Web Freelancer",
+      company: "Workana",
+      period: "2023 – 2024",
+      current: false,
+      description: [
+        "Entrega de sistemas web customizados com React.js, Node.js e banco de dados para clientes variados.",
+        "Consultoria técnica para levantamento de requisitos e tradução de necessidades em software funcional.",
+      ],
+      techs: ["React.js", "Node.js", "MySQL"],
+    },
+  ],
+  education: [
+    {
+      id: "unima",
+      degree: "Bacharelado em Ciência da Computação",
+      institution: "Unima Afya",
+      location: "Maceió, AL",
+      period: "2025 – 2029",
+      current: true,
+    },
+    {
+      id: "etec",
+      degree: "Técnico em Programação de Computadores",
+      institution: "ETEC Uirapuru",
+      period: "2023",
+      current: false,
+    },
+  ],
+  certifications: [
+    {
+      id: "ar",
+      name: "Capacitação em Realidade Aumentada",
+      issuer: "Instituto Vertex",
+      year: "2026",
+    },
+    {
+      id: "ai",
+      name: "Inteligência Artificial Generativa",
+      issuer: "Google Cloud Skills Boost",
+      year: "2025",
+    },
+    {
+      id: "adm",
+      name: "Técnico de Assistente Administrativo",
+      issuer: "IEL/SENAI",
+      year: "2024–2026",
+    },
+    {
+      id: "excel",
+      name: "Excel – Dashboards e Tabelas Dinâmicas",
+      issuer: "Hashtag Treinamentos",
+      year: "2024",
+    },
+    {
+      id: "python",
+      name: "Python",
+      issuer: "Hashtag Programação",
+      year: "2024",
+    },
+  ],
+};

@@ -9,7 +9,7 @@ import { projects } from "../data/projects";
 
 const ProjectsSection = styled.section`
   padding: 120px 20px;
-  background: #0f1117;
+  background: #0a0a0a;
   color: #e2e8f0;
   position: relative;
   
@@ -21,8 +21,8 @@ const ProjectsSection = styled.section`
     width: 100%;
     height: 100%;
     background: 
-      radial-gradient(circle at 80% 10%, rgba(0, 255, 224, 0.03) 0%, transparent 50%),
-      radial-gradient(circle at 20% 90%, rgba(0, 191, 166, 0.03) 0%, transparent 50%);
+      radial-gradient(circle at 80% 10%, rgba(59, 130, 246, 0.03) 0%, transparent 50%),
+      radial-gradient(circle at 20% 90%, rgba(37, 99, 235, 0.03) 0%, transparent 50%);
     z-index: 0;
   }
 `;
@@ -47,7 +47,7 @@ const SectionTitle = styled(motion.h2)`
   gap: 16px;
   
   svg {
-    color: #00ffe0;
+    color: #3b82f6;
   }
 `;
 
@@ -64,10 +64,10 @@ const ProjectsGrid = styled(motion.div)`
 `;
 
 const ProjectCard = styled(motion.div)`
-  background: linear-gradient(145deg, rgba(26, 26, 45, 0.6), rgba(20, 20, 37, 0.5));
+  background: linear-gradient(145deg, rgba(17, 17, 17, 0.6), rgba(10, 10, 10, 0.5));
   border-radius: 20px;
   overflow: hidden;
-  border: 1px solid rgba(0, 255, 224, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.1);
   display: flex;
   flex-direction: column;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -76,7 +76,7 @@ const ProjectCard = styled(motion.div)`
   &:hover {
     transform: translateY(-10px);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-    border-color: rgba(0, 255, 224, 0.3);
+    border-color: rgba(59, 130, 246, 0.3);
   }
 `;
 
@@ -124,7 +124,7 @@ const NavigationButton = styled(motion.button)`
   ${(props) => (props.direction === "left" ? "left: 10px;" : "right: 10px;")}
   
   &:hover {
-    background: rgba(0, 255, 224, 0.8);
+    background: rgba(59, 130, 246, 0.8);
     color: #000;
   }
 `;
@@ -180,11 +180,11 @@ const TechStack = styled.div`
 
 const TechTag = styled.span`
   font-size: 0.8rem;
-  color: #00ffe0;
-  background: rgba(0, 255, 224, 0.1);
+  color: #3b82f6;
+  background: rgba(59, 130, 246, 0.1);
   padding: 4px 10px;
   border-radius: 6px;
-  border: 1px solid rgba(0, 255, 224, 0.2);
+  border: 1px solid rgba(59, 130, 246, 0.2);
 `;
 
 const LinksContainer = styled.div`
@@ -209,13 +209,13 @@ const ProjectLink = styled(motion.a)`
 `;
 
 const LiveButton = styled(ProjectLink)`
-  background: linear-gradient(135deg, #00ffe0, #00bfa6);
-  color: #0f1117;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #0a0a0a;
   border: none;
   
   &:hover {
-    background: linear-gradient(135deg, #00bfa6, #00ffe0);
-    box-shadow: 0 4px 15px rgba(0, 255, 224, 0.3);
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
   }
 `;
 
@@ -251,9 +251,9 @@ const ModalContent = styled(motion.div)`
   width: 95%;
   height: 90%;
   max-width: 1400px;
-  background: #1a1a2d;
+  background: #111111;
   border-radius: 20px;
-  border: 1px solid rgba(0, 255, 224, 0.2);
+  border: 1px solid rgba(59, 130, 246, 0.2);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -302,15 +302,15 @@ const IconButton = styled(motion.button)`
 `;
 
 const ModalTip = styled(motion.div)`
-  background: #00ffe0;
-  color: #0f1117;
+  background: #3b82f6;
+  color: #0a0a0a;
   padding: 8px 12px;
   border-radius: 8px;
   font-size: 0.75rem;
   font-weight: 700;
   position: relative;
   margin-right: 14px;
-  box-shadow: 0 4px 15px rgba(0, 255, 224, 0.3);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -326,7 +326,7 @@ const ModalTip = styled(motion.div)`
     height: 0; 
     border-top: 6px solid transparent;
     border-bottom: 6px solid transparent;
-    border-left: 6px solid #00ffe0;
+    border-left: 6px solid #3b82f6;
   }
 
   @media (max-width: 768px) {
@@ -356,7 +356,7 @@ const FallbackMessage = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  color: #0f1117;
+  color: #0a0a0a;
   width: 80%;
   max-width: 400px;
 `;
@@ -459,7 +459,7 @@ const ProjectCardComponent = ({ project, onOpenModal }) => {
                   }}
                   initial={{ x: "-50%", y: "-50%" }}
                   onClick={togglePlay}
-                  whileHover={{ scale: 1.1, background: "rgba(0, 255, 224, 0.8)", x: "-50%", y: "-50%" }}
+                  whileHover={{ scale: 1.1, background: "rgba(59, 130, 246, 0.8)", x: "-50%", y: "-50%" }}
                   whileTap={{ scale: 0.9, x: "-50%", y: "-50%" }}
                 >
                   {isPlaying ? <FiPause size={24} /> : <FiPlay size={24} style={{ marginLeft: "4px" }} />}
@@ -669,3 +669,5 @@ const Projects = () => {
 };
 
 export default Projects;
+
+

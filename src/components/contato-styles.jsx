@@ -1,12 +1,17 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, Suspense } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import styled from "styled-components";
+import { Canvas, useFrame } from "@react-three/fiber";
 import emailjs from "@emailjs/browser";
 import { FiSmartphone, FiCheckCircle, FiAlertCircle } from "react-icons/fi";
 
+const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
 const ContactSection = styled.section`
   padding: 120px 20px;
-  background: linear-gradient(to bottom, #1a1a2d, #141425);
+  background: linear-gradient(to bottom, #111111, #111111);
   color: #f5f5f5;
   position: relative;
   overflow: hidden;
@@ -22,8 +27,8 @@ const ContactSection = styled.section`
     width: 100%;
     height: 100%;
     background: 
-      radial-gradient(circle at 20% 80%, rgba(0, 255, 224, 0.03) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, rgba(0, 191, 166, 0.03) 0%, transparent 50%);
+      radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.03) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(37, 99, 235, 0.03) 0%, transparent 50%);
     z-index: 0;
   }
 `;
@@ -47,7 +52,7 @@ const TitleContainer = styled.div`
   margin-bottom: 60px;
   
   svg {
-    color: #00ffe0;
+    color: #3b82f6;
   }
 `;
 
@@ -75,12 +80,12 @@ const ContactForm = styled(motion.form)`
   display: flex;
   flex-direction: column;
   gap: 24px;
-  background: linear-gradient(145deg, rgba(26, 26, 45, 0.9), rgba(20, 20, 37, 0.8));
+  background: linear-gradient(145deg, rgba(17, 17, 17, 0.9), rgba(10, 10, 10, 0.8));
   padding: 40px;
   border-radius: 20px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(0, 255, 224, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.1);
   position: relative;
   
 `;
@@ -93,7 +98,7 @@ const FormGroup = styled.div`
 
 const Label = styled.label`
   font-size: 0.9rem;
-  color: #00ffe0;
+  color: #3b82f6;
   font-weight: 500;
   text-align: left;
 `;
@@ -103,15 +108,15 @@ const Input = styled(motion.input)`
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   font-size: 1rem;
-  background: rgba(26, 26, 45, 0.6);
+  background: rgba(17, 17, 17, 0.6);
   color: #e2e8f0;
   transition: all 0.3s ease;
 
   &:focus {
-    border-color: #00ffe0;
-    box-shadow: 0 0 0 3px rgba(0, 255, 224, 0.2);
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
     outline: none;
-    background: rgba(26, 26, 45, 0.8);
+    background: rgba(17, 17, 17, 0.8);
   }
 
   &::placeholder {
@@ -124,7 +129,7 @@ const TextArea = styled(motion.textarea)`
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   font-size: 1rem;
-  background: rgba(26, 26, 45, 0.6);
+  background: rgba(17, 17, 17, 0.6);
   color: #e2e8f0;
   resize: vertical;
   min-height: 120px;
@@ -132,10 +137,10 @@ const TextArea = styled(motion.textarea)`
   font-family: inherit;
 
   &:focus {
-    border-color: #00ffe0;
-    box-shadow: 0 0 0 3px rgba(0, 255, 224, 0.2);
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
     outline: none;
-    background: rgba(26, 26, 45, 0.8);
+    background: rgba(17, 17, 17, 0.8);
   }
 
   &::placeholder {
@@ -146,8 +151,8 @@ const TextArea = styled(motion.textarea)`
 const SubmitButton = styled(motion.button)`
   padding: 16px 24px;
   font-size: 1rem;
-  background: linear-gradient(135deg, #00ffe0, #00bfa6);
-  color: #0f0f23;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #090909;
   border: none;
   border-radius: 12px;
   cursor: pointer;
@@ -180,8 +185,8 @@ const SubmitButton = styled(motion.button)`
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 12px 30px rgba(0, 255, 224, 0.4);
-    background: linear-gradient(135deg, #00bfa6, #00ffe0);
+    box-shadow: 0 12px 30px rgba(59, 130, 246, 0.4);
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
 
     &::before {
       left: 100%;
@@ -213,23 +218,58 @@ const MessageStatus = styled(motion.div)`
   gap: 10px;
   background: ${(props) =>
     props.success 
-      ? "linear-gradient(135deg, rgba(0, 255, 224, 0.1), rgba(0, 191, 166, 0.1))" 
+      ? "linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.1))" 
       : "linear-gradient(135deg, rgba(220, 53, 69, 0.1), rgba(185, 28, 28, 0.1))"};
-  color: ${(props) => props.success ? "#00ffe0" : "#ff6b6b"};
+  color: ${(props) => props.success ? "#3b82f6" : "#ff6b6b"};
   border: 1px solid ${(props) =>
-    props.success ? "rgba(0, 255, 224, 0.3)" : "rgba(220, 53, 69, 0.3)"};
+    props.success ? "rgba(59, 130, 246, 0.3)" : "rgba(220, 53, 69, 0.3)"};
+`;
+
+const SuccessToast = styled(motion.div)`
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.18), rgba(37, 99, 235, 0.2));
+  border: 1px solid rgba(59, 130, 246, 0.45);
+  color: #d8fff8;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 16px 35px rgba(0, 0, 0, 0.45);
+
+  @media (max-width: 768px) {
+    right: 12px;
+    left: 12px;
+    bottom: 14px;
+    justify-content: center;
+  }
+`;
+
+const SuccessIconWrap = styled(motion.div)`
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(59, 130, 246, 0.18);
+  color: #3b82f6;
 `;
 
 const ContactInfo = styled(motion.div)`
   display: flex;
   flex-direction: column;
   gap: 32px;
-  background: linear-gradient(145deg, rgba(26, 26, 45, 0.9), rgba(20, 20, 37, 0.8));
+  background: linear-gradient(145deg, rgba(17, 17, 17, 0.9), rgba(10, 10, 10, 0.8));
   padding: 40px;
   border-radius: 20px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(0, 255, 224, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.1);
   align-self: flex-start;
   position: relative;
   
@@ -274,49 +314,109 @@ const SocialLink = styled(motion.a)`
   border: 1px solid rgba(255, 255, 255, 0.1);
 
   &:hover {
-    background: rgba(0, 255, 224, 0.1);
-    border-color: rgba(0, 255, 224, 0.3);
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.3);
     transform: translateX(8px);
   }
 
   i {
     font-size: 1.4rem;
-    color: #00ffe0;
+    color: #3b82f6;
     transition: all 0.3s ease;
   }
 `;
+
+const FloatCanvasWrap = styled.div`
+  position: absolute;
+  bottom: 60px;
+  right: 60px;
+  width: 160px;
+  height: 160px;
+  z-index: 0;
+  pointer-events: auto;
+
+  @media (max-width: 768px) { display: none; }
+`;
+
+function FloatIcosahedron() {
+  const mesh = useRef();
+  const hovered = useRef(false);
+
+  useFrame((_, dt) => {
+    if (!mesh.current) return;
+    const speed = hovered.current ? 3.5 : 0.45;
+    mesh.current.rotation.x += dt * speed * 0.35;
+    mesh.current.rotation.y += dt * speed * 0.55;
+  });
+
+  return (
+    <mesh
+      ref={mesh}
+      onPointerOver={() => { hovered.current = true; }}
+      onPointerOut={() => { hovered.current = false; }}
+    >
+      <icosahedronGeometry args={[1.2, 1]} />
+      <meshStandardMaterial color="#93c5fd" wireframe transparent opacity={0.9} />
+    </mesh>
+  );
+}
 
 const Contact = () => {
   const ref = useRef();
   const refSection = useRef(null);
   const [message, setMessage] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccessFeedback, setShowSuccessFeedback] = useState(false);
   const isInView = useInView(refSection, { once: true, margin: "-100px" });
 
   const sendEmail = (e) => {
     e.preventDefault();
+
+    if (!EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID || !EMAILJS_PUBLIC_KEY) {
+      setMessage({
+        text: "Configuração de e-mail incompleta. Defina as variáveis VITE_EMAILJS_SERVICE_ID, VITE_EMAILJS_TEMPLATE_ID e VITE_EMAILJS_PUBLIC_KEY.",
+        success: false,
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     setMessage(null);
 
     emailjs
       .sendForm(
-        "service_bdiwhxl",
-        "template_xsmh59t",
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
         ref.current,
-        "IXUTuZ0QeccX_mtzV"
+        {
+          publicKey: EMAILJS_PUBLIC_KEY,
+        }
       )
       .then(
         (result) => {
-          setMessage({ text: "Mensagem enviada com sucesso!", success: true });
+          setMessage(null);
+          setShowSuccessFeedback(true);
           ref.current.reset();
           setIsSubmitting(false);
-          setTimeout(() => setMessage(null), 5000); // Limpa mensagem após 5s
+          setTimeout(() => setShowSuccessFeedback(false), 3200);
         },
         (error) => {
-          setMessage({
-            text: "Erro ao enviar a mensagem. Tente novamente mais tarde.",
-            success: false,
-          });
+          const status = error?.status;
+          const details = error?.text ? ` (${error.text})` : "";
+
+          if (status === 412) {
+            setMessage({
+              text: `Falha de validação no EmailJS (412). Verifique se Service ID, Template ID, Public Key e domínio estão corretos no painel do EmailJS${details}.`,
+              success: false,
+            });
+          } else {
+            setMessage({
+              text: `Erro ao enviar a mensagem. Tente novamente mais tarde${details}.`,
+              success: false,
+            });
+          }
+
+          console.error("EmailJS sendForm error:", error);
           setIsSubmitting(false);
         }
       );
@@ -324,6 +424,15 @@ const Contact = () => {
 
   return (
     <ContactSection id="contato" ref={refSection}>
+      <FloatCanvasWrap>
+        <Suspense fallback={null}>
+          <Canvas camera={{ position: [0, 0, 3.8], fov: 45 }} dpr={[1, 1.5]} style={{ background: "transparent" }}>
+            <ambientLight intensity={0.4} />
+            <pointLight position={[-3, 3, 3]} intensity={1.2} color="#3b82f6" />
+            <FloatIcosahedron />
+          </Canvas>
+        </Suspense>
+      </FloatCanvasWrap>
       <Container>
         <TitleContainer>
           <motion.div
@@ -359,10 +468,10 @@ const Contact = () => {
               <Input
                 type="text"
                 id="name"
-                name="from_name"
+                name="name"
                 placeholder="Como posso te chamar?"
                 required
-                whileFocus={{ scale: 1.02, borderColor: "#00ffe0" }}
+                whileFocus={{ scale: 1.02, borderColor: "#3b82f6" }}
               />
             </FormGroup>
 
@@ -371,10 +480,10 @@ const Contact = () => {
               <Input
                 type="email"
                 id="email"
-                name="from_email"
+                name="email"
                 placeholder="Para onde devo responder?"
                 required
-                whileFocus={{ scale: 1.02, borderColor: "#00ffe0" }}
+                whileFocus={{ scale: 1.02, borderColor: "#3b82f6" }}
               />
             </FormGroup>
 
@@ -385,9 +494,11 @@ const Contact = () => {
                 name="message"
                 placeholder="O que gostaria de conversar?"
                 required
-                whileFocus={{ scale: 1.02, borderColor: "#00ffe0" }}
+                whileFocus={{ scale: 1.02, borderColor: "#3b82f6" }}
               />
             </FormGroup>
+
+            <input type="hidden" name="title" value="Contact Us" />
 
             <SubmitButton
               type="submit"
@@ -464,9 +575,31 @@ const Contact = () => {
             </SocialLinks>
           </ContactInfo>
         </ContactContent>
+
+        <AnimatePresence>
+          {showSuccessFeedback && (
+            <SuccessToast
+              initial={{ opacity: 0, y: 12, scale: 0.92 }}
+              animate={{ opacity: 1, y: -60, scale: 1 }}
+              exit={{ opacity: 0, y: 24, scale: 0.94 }}
+              transition={{ duration: 0.35 }}
+            >
+              <SuccessIconWrap
+                initial={{ scale: 0.6, rotate: -15 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ type: "spring", stiffness: 320, damping: 18 }}
+              >
+                <FiCheckCircle size={18} />
+              </SuccessIconWrap>
+              <strong>Mensagem enviada com sucesso!</strong>
+            </SuccessToast>
+          )}
+        </AnimatePresence>
       </Container>
     </ContactSection>
   );
 };
 
 export default Contact;
+
+

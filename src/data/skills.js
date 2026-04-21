@@ -5,11 +5,11 @@ export const skillsData = [
   },
   {
     title: "Backend & Database",
-    skills: ["Node.js", "Python", "MySQL", "Firebase", "PHP"]
+    skills: ["Node.js", "Java", "Python", "MySQL", "Firebase", "PHP", "SQL Server"]
   },
   {
     title: "Ferramentas",
-    skills: ["Vite", "Next.js", "Tkinter", "PyGame", "Chakra UI"]
+    skills: ["Docker", "Vite", "Next.js", "Tkinter", "PyGame", "Chakra UI"]
   },
   {
     title: "Outros",

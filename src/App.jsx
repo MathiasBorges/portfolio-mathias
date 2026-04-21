@@ -5,6 +5,7 @@ import styled, { keyframes } from 'styled-components';
 
 // Lazy load components below the fold
 const About = lazy(() => import("./components/about-styles"));
+const Experience = lazy(() => import("./components/experience-styles"));
 const Skills = lazy(() => import("./components/skills-styles"));
 const Projects = lazy(() => import("./components/projects-styles"));
 const Contact = lazy(() => import("./components/contato-styles"));
@@ -28,11 +29,11 @@ const LoadingContainer = styled.div`
 const Spinner = styled.div`
   width: 50px;
   height: 50px;
-  border: 3px solid rgba(0, 255, 224, 0.1);
-  border-top: 3px solid #00ffe0;
+  border: 3px solid rgba(59, 130, 246, 0.1);
+  border-top: 3px solid #3b82f6;
   border-radius: 50%;
   animation: ${spin} 1s linear infinite;
-  box-shadow: 0 0 15px rgba(0, 255, 224, 0.2);
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
 `;
 
 const LoadingFallback = () => (
@@ -49,6 +50,7 @@ function App() {
       <Hero />
       <Suspense fallback={<LoadingFallback />}>
         <About/>
+        <Experience/>
         <Skills/>
         <Projects/>
         <Contact/>

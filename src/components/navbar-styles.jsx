@@ -2,12 +2,12 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
 import styled, { ThemeProvider, createGlobalStyle, keyframes } from "styled-components";
-import { FiHome, FiUser, FiCode, FiBriefcase, FiMail } from "react-icons/fi";
+import { FiHome, FiUser, FiCode, FiBriefcase, FiMail, FiClock } from "react-icons/fi";
 
 // Theme com nova identidade visual escura
 const theme = {
   colors: {
-    primary: "#00ffe0",
+    primary: "#3b82f6",
     text: "#e2e8f0",
     secondaryText: "#a0a4ad",
     background: "rgba(15, 17, 23, 0.8)", // Mais transparente para glassmorphism
@@ -30,6 +30,7 @@ const GlobalStyle = createGlobalStyle`
 const navItems = [
   { href: "#home", label: "Home", icon: <FiHome /> },
   { href: "#sobre", label: "Sobre", icon: <FiUser /> },
+  { href: "#experiencia", label: "Trajetória", icon: <FiClock /> },
   { href: "#skills", label: "Skills", icon: <FiCode /> },
   { href: "#projetos", label: "Projetos", icon: <FiBriefcase /> },
   { href: "#contato", label: "Contato", icon: <FiMail /> },
@@ -123,7 +124,7 @@ const NavLink = styled(motion.a)`
   align-items: center;
   gap: 0.5rem;
   color: ${({ theme, active }) => (active ? theme.colors.primary : theme.colors.secondaryText)};
-  background-color: ${({ theme, active }) => (active ? 'rgba(0, 255, 224, 0.1)' : 'transparent')};
+  background-color: ${({ theme, active }) => (active ? 'rgba(59, 130, 246, 0.1)' : 'transparent')};
   text-decoration: none;
   font-weight: 500;
   font-size: 1rem;
@@ -134,7 +135,7 @@ const NavLink = styled(motion.a)`
   &:hover,
   &:focus {
     color: ${({ theme }) => theme.colors.primary};
-    background-color: rgba(0, 255, 224, 0.1);
+    background-color: rgba(59, 130, 246, 0.1);
   }
 `;
 
@@ -178,7 +179,7 @@ const MobileMenuContainer = styled(motion.div)`
   right: 0;
   width: min(75%, 300px);
   height: 100vh;
-  background: #0f1117;
+  background: #0a0a0a;
   padding: calc(${({ theme }) => theme.navbarHeight} + 1.8rem) 1.8rem;
   display: flex;
   flex-direction: column;
@@ -362,3 +363,4 @@ const NavbarComponent = () => {
 };
 
 export default NavbarComponent;
+

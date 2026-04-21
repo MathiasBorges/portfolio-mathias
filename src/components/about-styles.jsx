@@ -1,6 +1,7 @@
-import React, { useRef } from "react";
+import React, { useRef, Suspense } from "react";
 import { motion, useInView } from "framer-motion";
 import styled from "styled-components";
+import { Canvas, useFrame } from "@react-three/fiber";
 import my_image from "../assets/me.jpeg";
 import { FiUser, FiMail } from "react-icons/fi";
 
@@ -8,7 +9,7 @@ import { FiUser, FiMail } from "react-icons/fi";
 
 const AboutSection = styled.section`
   padding: 120px 20px;
-  background: linear-gradient(135deg, #0f1117 0%, #1a1d27 50%, #10111c 100%);
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
   color: #c5cad3;
   position: relative;
   overflow: hidden;
@@ -21,8 +22,8 @@ const AboutSection = styled.section`
     width: 100%;
     height: 100%;
     background: 
-      radial-gradient(circle at 70% 20%, rgba(0, 255, 224, 0.03) 0%, transparent 50%),
-      radial-gradient(circle at 30% 80%, rgba(0, 191, 166, 0.03) 0%, transparent 50%);
+      radial-gradient(circle at 70% 20%, rgba(59, 130, 246, 0.03) 0%, transparent 50%),
+      radial-gradient(circle at 30% 80%, rgba(37, 99, 235, 0.03) 0%, transparent 50%);
     z-index: 0;
   }
 `;
@@ -48,7 +49,7 @@ const SectionTitle = styled(motion.h2)`
   gap: 16px;
   
   svg {
-    color: #00ffe0;
+    color: #3b82f6;
   }
 `;
 
@@ -78,7 +79,7 @@ const AvatarContainer = styled(motion.div)`
     left: -20px;
     right: -20px;
     bottom: -20px;
-    background: linear-gradient(45deg, #00ffe0, transparent, #00bfa6, transparent, #00ffe0);
+    background: linear-gradient(45deg, #3b82f6, transparent, #2563eb, transparent, #3b82f6);
     border-radius: 50%;
     opacity: 0.1;
     animation: rotate 8s linear infinite;
@@ -96,27 +97,27 @@ const Avatar = styled(motion.img)`
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   object-fit: cover;
-  border: 4px solid #00ffe0;
-  box-shadow: 0 0 30px rgba(0, 255, 224, 0.3);
+  border: 4px solid #3b82f6;
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
   animation: pulseGlow 4s ease-in-out infinite alternate;
   position: relative;
   z-index: 2;
 
   @keyframes pulseGlow {
     from {
-      box-shadow: 0 0 20px rgba(0, 255, 224, 0.3);
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
     }
     to {
-      box-shadow: 0 0 40px rgba(0, 255, 224, 0.5);
+      box-shadow: 0 0 40px rgba(59, 130, 246, 0.5);
     }
   }
 `;
 
 const TextContent = styled(motion.div)`
-  background: linear-gradient(145deg, rgba(26, 26, 45, 0.4), rgba(20, 20, 37, 0.3));
+  background: linear-gradient(145deg, rgba(17, 17, 17, 0.4), rgba(10, 10, 10, 0.3));
   padding: 32px;
   border-radius: 20px;
-  border: 1px solid rgba(0, 255, 224, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.1);
   backdrop-filter: blur(10px);
   position: relative;
   
@@ -127,7 +128,7 @@ const TextContent = styled(motion.div)`
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(90deg, transparent, #00ffe0, transparent);
+    background: linear-gradient(90deg, transparent, #3b82f6, transparent);
     border-radius: 20px 20px 0 0;
   }
   
@@ -151,11 +152,11 @@ const TextContent = styled(motion.div)`
 
 const Highlight = styled(motion.span)`
   font-weight: 600;
-  color: #00ffe0;
-  background-color: rgba(0, 255, 224, 0.15);
+  color: #3b82f6;
+  background-color: rgba(59, 130, 246, 0.15);
   padding: 4px 10px;
   border-radius: 8px;
-  border: 1px solid rgba(0, 255, 224, 0.2);
+  border: 1px solid rgba(59, 130, 246, 0.2);
   display: inline-block;
   cursor: default;
 `;
@@ -166,8 +167,8 @@ const ContactButton = styled(motion.a)`
   gap: 12px;
   padding: 16px 32px;
   font-size: 1rem;
-  background: linear-gradient(135deg, #00ffe0, #00bfa6);
-  color: #0f0f23;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #090909;
   text-decoration: none;
   border-radius: 12px;
   font-weight: 700;
@@ -175,7 +176,7 @@ const ContactButton = styled(motion.a)`
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 8px 25px rgba(0, 255, 224, 0.3);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
   position: relative;
   overflow: hidden;
   
@@ -191,9 +192,9 @@ const ContactButton = styled(motion.a)`
   }
 
   &:hover {
-    background: linear-gradient(135deg, #00bfa6, #00ffe0);
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
     transform: translateY(-3px);
-    box-shadow: 0 12px 30px rgba(0, 255, 224, 0.4);
+    box-shadow: 0 12px 30px rgba(59, 130, 246, 0.4);
     
     &::before {
       left: 100%;
@@ -204,6 +205,43 @@ const ContactButton = styled(motion.a)`
     transition: all 0.3s ease;
   }
 `;
+
+// --- 3D Floating Element ---
+
+const FloatCanvasWrap = styled.div`
+  position: absolute;
+  top: 50px;
+  right: 50px;
+  width: 170px;
+  height: 170px;
+  z-index: 0;
+  pointer-events: auto;
+
+  @media (max-width: 768px) { display: none; }
+`;
+
+function FloatOctahedron() {
+  const mesh = useRef();
+  const hovered = useRef(false);
+
+  useFrame((_, dt) => {
+    if (!mesh.current) return;
+    const speed = hovered.current ? 3.5 : 0.5;
+    mesh.current.rotation.x += dt * speed * 0.4;
+    mesh.current.rotation.y += dt * speed * 0.6;
+  });
+
+  return (
+    <mesh
+      ref={mesh}
+      onPointerOver={() => { hovered.current = true; }}
+      onPointerOut={() => { hovered.current = false; }}
+    >
+      <octahedronGeometry args={[1.2, 0]} />
+      <meshStandardMaterial color="#93c5fd" wireframe transparent opacity={0.9} />
+    </mesh>
+  );
+}
 
 // --- Framer Motion Variants ---
 
@@ -243,6 +281,15 @@ const About = () => {
 
   return (
     <AboutSection id="sobre" ref={ref}>
+      <FloatCanvasWrap>
+        <Suspense fallback={null}>
+          <Canvas camera={{ position: [0, 0, 3.8], fov: 45 }} dpr={[1, 1.5]} style={{ background: "transparent" }}>
+            <ambientLight intensity={0.4} />
+            <pointLight position={[3, 3, 3]} intensity={1.2} color="#3b82f6" />
+            <FloatOctahedron />
+          </Canvas>
+        </Suspense>
+      </FloatCanvasWrap>
       <Container>
         <SectionTitle
           initial={{ opacity: 0, y: -20 }}
@@ -268,17 +315,17 @@ const About = () => {
 
           <TextContent variants={textVariants}>
             <p>
-              Sou um desenvolvedor apaixonado por tecnologia e resolução de problemas. Atuo tanto no <Highlight whileHover={{ scale: 1.1, backgroundColor: "rgba(0, 255, 224, 0.25)" }}>Front-end</Highlight> quanto no <Highlight whileHover={{ scale: 1.1, backgroundColor: "rgba(0, 255, 224, 0.25)" }}>Back-end</Highlight>, sempre buscando evoluir e entregar soluções eficientes.
+              Sou um desenvolvedor apaixonado por tecnologia e resolução de problemas. Atuo tanto no <Highlight whileHover={{ scale: 1.1, backgroundColor: "rgba(59, 130, 246, 0.25)" }}>Front-end</Highlight> quanto no <Highlight whileHover={{ scale: 1.1, backgroundColor: "rgba(59, 130, 246, 0.25)" }}>Back-end</Highlight>, sempre buscando evoluir e entregar soluções eficientes.
             </p>
             <p>
-              Tenho experiência liderando e colaborando em projetos diversos, utilizando metodologias ágeis como o <Highlight whileHover={{ scale: 1.1, backgroundColor: "rgba(0, 255, 224, 0.25)" }}>Scrum</Highlight>. Busco criar experiências digitais que geram impacto e valor.
+              Tenho experiência liderando e colaborando em projetos diversos, utilizando metodologias ágeis como o <Highlight whileHover={{ scale: 1.1, backgroundColor: "rgba(59, 130, 246, 0.25)" }}>Scrum</Highlight>. Busco criar experiências digitais que geram impacto e valor.
             </p>
             <ContactButton
               href="#contato"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <FiMail color="#0f0f23" /> Entrar em Contato
+              <FiMail color="#090909" /> Entrar em Contato
             </ContactButton>
           </TextContent>
         </GridLayout>
@@ -288,3 +335,5 @@ const About = () => {
 };
 
 export default About;
+
+

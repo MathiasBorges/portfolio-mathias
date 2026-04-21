@@ -1,12 +1,13 @@
-import React, { useRef } from "react";
+import React, { useRef, Suspense } from "react";
 import { motion, useInView } from "framer-motion";
 import styled from "styled-components";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { FiCode, FiDatabase, FiTool, FiGitBranch } from "react-icons/fi";
 import { skillsData } from "../data/skills";
 
 const SkillsSection = styled.section`
   padding: 120px 20px;
-  background: linear-gradient(135deg, #0c0c1a 0%, #141425 50%, #0f1117 100%);
+  background: linear-gradient(135deg, #0a0a0a 0%, #111111 50%, #0a0a0a 100%);
   color: #e2e8f0;
   position: relative;
   overflow: hidden;
@@ -19,8 +20,8 @@ const SkillsSection = styled.section`
     width: 100%;
     height: 100%;
     background: 
-      radial-gradient(circle at 25% 75%, rgba(0, 255, 224, 0.04) 0%, transparent 50%),
-      radial-gradient(circle at 75% 25%, rgba(0, 191, 166, 0.04) 0%, transparent 50%);
+      radial-gradient(circle at 25% 75%, rgba(59, 130, 246, 0.04) 0%, transparent 50%),
+      radial-gradient(circle at 75% 25%, rgba(37, 99, 235, 0.04) 0%, transparent 50%);
     z-index: 0;
   }
   
@@ -49,7 +50,7 @@ const SectionTitle = styled(motion.h2)`
   gap: 16px;
   
   svg {
-    color: #00ffe0;
+    color: #3b82f6;
   }
 `;
 
@@ -67,10 +68,10 @@ const SkillsGrid = styled(motion.div)`
 `;
 
 const SkillCategory = styled(motion.div)`
-  background: linear-gradient(145deg, rgba(26, 26, 45, 0.8), rgba(20, 20, 37, 0.7));
+  background: linear-gradient(145deg, rgba(17, 17, 17, 0.8), rgba(10, 10, 10, 0.7));
   padding: 28px;
   border-radius: 16px;
-  border: 1px solid rgba(0, 255, 224, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.1);
   backdrop-filter: blur(10px);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
@@ -86,15 +87,15 @@ const SkillCategory = styled(motion.div)`
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(90deg, transparent, #00ffe0, transparent);
+    background: linear-gradient(90deg, transparent, #3b82f6, transparent);
     opacity: 0;
     transition: opacity 0.3s ease;
   }
 
   &:hover {
-    border-color: rgba(0, 255, 224, 0.3);
+    border-color: rgba(59, 130, 246, 0.3);
     transform: translateY(-6px);
-    box-shadow: 0 15px 35px rgba(0, 255, 224, 0.15);
+    box-shadow: 0 15px 35px rgba(59, 130, 246, 0.15);
     
     &::before {
       opacity: 1;
@@ -109,19 +110,19 @@ const SkillCategory = styled(motion.div)`
 const CategoryIcon = styled(motion.div)`
   width: 52px;
   height: 52px;
-  background: rgba(0, 255, 224, 0.1);
-  border: 1px solid rgba(0, 255, 224, 0.2);
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
   border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 20px;
-  color: #00ffe0;
+  color: #3b82f6;
   transition: all 0.3s ease;
   
   ${SkillCategory}:hover & {
-    background: rgba(0, 255, 224, 0.15);
-    border-color: rgba(0, 255, 224, 0.4);
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.4);
     transform: scale(1.05) rotate(5deg);
   }
 `;
@@ -154,12 +155,49 @@ const SkillTag = styled(motion.span)`
   cursor: default;
 
   &:hover {
-    background: rgba(0, 255, 224, 0.1);
-    border-color: rgba(0, 255, 224, 0.3);
-    color: #00ffe0;
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: #3b82f6;
     transform: translateY(-1px);
   }
 `;
+
+// ─── 3D Floating Element ─────────────────────────────────────────────────────
+
+const FloatCanvasWrap = styled.div`
+  position: absolute;
+  bottom: 60px;
+  left: 40px;
+  width: 160px;
+  height: 160px;
+  z-index: 0;
+  pointer-events: auto;
+
+  @media (max-width: 768px) { display: none; }
+`;
+
+function FloatTorusKnot() {
+  const mesh = useRef();
+  const hovered = useRef(false);
+
+  useFrame((_, dt) => {
+    if (!mesh.current) return;
+    const speed = hovered.current ? 4 : 0.35;
+    mesh.current.rotation.x += dt * speed * 0.3;
+    mesh.current.rotation.y += dt * speed * 0.55;
+  });
+
+  return (
+    <mesh
+      ref={mesh}
+      onPointerOver={() => { hovered.current = true; }}
+      onPointerOut={() => { hovered.current = false; }}
+    >
+      <torusKnotGeometry args={[0.8, 0.22, 80, 8]} />
+      <meshStandardMaterial color="#93c5fd" wireframe transparent opacity={0.9} />
+    </mesh>
+  );
+}
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -217,6 +255,15 @@ const Skills = () => {
 
   return (
     <SkillsSection id="skills" ref={ref}>
+      <FloatCanvasWrap>
+        <Suspense fallback={null}>
+          <Canvas camera={{ position: [0, 0, 3.5], fov: 50 }} dpr={[1, 1.5]} style={{ background: "transparent" }}>
+            <ambientLight intensity={0.4} />
+            <pointLight position={[-3, 3, 3]} intensity={1.2} color="#3b82f6" />
+            <FloatTorusKnot />
+          </Canvas>
+        </Suspense>
+      </FloatCanvasWrap>
       <Container>
         <SectionTitle
           initial={{ opacity: 0, y: -20 }}
@@ -265,3 +312,4 @@ const Skills = () => {
 };
 
 export default Skills;
+

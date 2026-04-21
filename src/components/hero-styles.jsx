@@ -1,372 +1,432 @@
-// src/components/Hero.js
-import React from "react";
+import React, { useRef, Suspense, useState } from "react";
 import styled from "styled-components";
 import { motion } from "framer-motion";
-import just_me_image from "../assets/me.jpeg";
-import hero_background from "../assets/my_pic_in_hero2.png";
-import { FiCoffee, FiSmartphone } from "react-icons/fi";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { FiGithub, FiLinkedin, FiArrowDown } from "react-icons/fi";
 
-// --- Styled Components Modernizados ---
+// ─── 3D Scene ────────────────────────────────────────────────────────────────
+
+function WireframeIcosahedron() {
+  const meshRef = useRef();
+
+  useFrame(({ clock }) => {
+    const t = clock.getElapsedTime();
+    meshRef.current.rotation.x = t * 0.10;
+    meshRef.current.rotation.y = t * 0.14;
+    meshRef.current.position.y = Math.sin(t * 0.6) * 0.14;
+  });
+
+  return (
+    <mesh ref={meshRef}>
+      <icosahedronGeometry args={[1.7, 1]} />
+      <meshStandardMaterial color="#3b82f6" wireframe transparent opacity={0.45} />
+    </mesh>
+  );
+}
+
+function OuterRing() {
+  const ringRef = useRef();
+
+  useFrame(({ clock }) => {
+    const t = clock.getElapsedTime();
+    ringRef.current.rotation.z = t * 0.08;
+    ringRef.current.rotation.x = Math.sin(t * 0.3) * 0.3;
+  });
+
+  return (
+    <mesh ref={ringRef}>
+      <torusGeometry args={[2.5, 0.012, 6, 80]} />
+      <meshStandardMaterial color="#60a5fa" transparent opacity={0.22} />
+    </mesh>
+  );
+}
+
+function Scene3D() {
+  return (
+    <Canvas
+      camera={{ position: [0, 0, 5.5], fov: 42 }}
+      style={{ background: "transparent" }}
+      dpr={[1, 2]}
+    >
+      <ambientLight intensity={0.4} />
+      <pointLight position={[5, 5, 5]} intensity={1.2} color="#3b82f6" />
+      <pointLight position={[-5, -3, -5]} intensity={0.6} color="#1d4ed8" />
+      <WireframeIcosahedron />
+      <OuterRing />
+    </Canvas>
+  );
+}
+
+// ─── Styled Components ───────────────────────────────────────────────────────
 
 const HeroSection = styled.section`
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   align-items: center;
-  justify-content: center;
-  background: #0f1117;
-  color: #d1d5db;
-  text-align: center;
-  gap: 20px;
-  padding: 0 20px;
-  overflow-x: hidden;
+  background: var(--bg);
+  padding: 0 8vw;
   position: relative;
+  overflow: hidden;
 
-  /* Background sutil */
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at 50% 50%, rgba(0, 255, 224, 0.05) 0%, transparent 60%);
-    z-index: 0;
-  }
-
-  @media screen and (max-width: 768px) {
-    gap: 25px;
-    padding-top: 80px;
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+    padding: 110px 24px 60px;
+    text-align: center;
   }
 `;
 
-const FloatingElement = styled(motion.div)`
+const GridLine = styled.div`
   position: absolute;
-  background: rgba(0, 255, 224, 0.03);
-  border-radius: 50%;
-  z-index: 0;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(59, 130, 246, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59, 130, 246, 0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
   pointer-events: none;
+  z-index: 0;
 `;
 
-const ContentWrapper = styled.div`
+const LeftContent = styled(motion.div)`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  max-width: 1200px;
-  margin: 0 auto;
-  position: relative;
+  gap: 24px;
   z-index: 1;
 `;
 
-const ImageContainer = styled(motion.div)`
-  position: relative;
-  width: 450px;
-  height: 450px;
+const TagLine = styled(motion.div)`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
 
-  @media screen and (max-width: 768px) {
-    width: 280px;
-    height: 280px;
-    margin-bottom: 30px;
+  &::before {
+    content: '';
+    display: block;
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  @media (max-width: 900px) {
+    justify-content: center;
+    &::before { display: none; }
   }
 `;
 
-const BackgroundImage = styled(motion.img)`
-  position: absolute;
-  top: 0;
-  left: 0;
+const Name = styled(motion.h1)`
+  font-size: clamp(3rem, 6vw, 5.2rem);
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+`;
+
+const BlueWord = styled.span`
+  color: var(--accent);
+`;
+
+const Role = styled(motion.p)`
+  font-size: clamp(0.95rem, 1.5vw, 1.1rem);
+  color: var(--muted-light);
+  max-width: 460px;
+  line-height: 1.75;
+
+  @media (max-width: 900px) {
+    max-width: 100%;
+  }
+`;
+
+const ButtonRow = styled(motion.div)`
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+
+  @media (max-width: 900px) {
+    justify-content: center;
+  }
+`;
+
+const PrimaryBtn = styled(motion.a)`
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 26px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+
+  &:hover {
+    background: var(--accent-light);
+    transform: translateY(-2px);
+  }
+`;
+
+const SecondaryBtn = styled(motion.a)`
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 26px;
+  background: transparent;
+  color: var(--muted-light);
+  border: 1px solid var(--border-hover);
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, transform 0.2s;
+
+  &:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-2px);
+  }
+`;
+
+const SocialRow = styled(motion.div)`
+  display: flex;
+  gap: 12px;
+  align-items: center;
+
+  @media (max-width: 900px) {
+    justify-content: center;
+  }
+`;
+
+const SocialBtn = styled.a`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+  transition: border-color 0.2s, color 0.2s, transform 0.2s;
+
+  &:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-2px);
+  }
+`;
+
+const StatusBadge = styled(motion.div)`
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 20px;
+  font-size: 0.78rem;
+  color: var(--accent-light);
+  width: fit-content;
+
+  @media (max-width: 900px) {
+    margin: 0 auto;
+  }
+`;
+
+const Dot = styled.span`
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 6px #22c55e;
+  animation: blink 2s ease-in-out infinite;
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+`;
+
+const RightContent = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 520px;
+  position: relative;
+  z-index: 1;
+
+  @media (max-width: 900px) {
+    height: 300px;
+  }
+`;
+
+const CanvasWrapper = styled.div`
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  filter: drop-shadow(0 0 0px black);
-  scale: 1.5;
-  animation: shadowTransition 2s ease-in infinite alternate;
-  @keyframes shadowTransition {
-    to {
-      filter: drop-shadow(0 0 6px black);
-    }
-  }
 `;
 
-const ProfileImage = styled(motion.img)`
+const ScrollHint = styled(motion.div)`
   position: absolute;
-  top: 50%;
+  bottom: 32px;
   left: 50%;
-  transform: translate(-50%, -50%);
-  width: 180px;
-  height: 180px;
-  object-fit: cover;
-  border-radius: 50%;
-  box-shadow: 0 0 15px rgba(0, 255, 224, 0.3), 0 0 25px rgba(0, 255, 224, 0.2);
-  animation: pulseGlow 3s ease-in-out infinite alternate;
-
-  @keyframes pulseGlow {
-    from {
-      box-shadow: 0 0 15px rgba(0, 255, 224, 0.3), 0 0 25px rgba(0, 255, 224, 0.2);
-    }
-    to {
-      box-shadow: 0 0 25px rgba(0, 255, 224, 0.5), 0 0 40px rgba(0, 255, 224, 0.3);
-    }
-  }
-
-  @media screen and (max-width: 768px) {
-    width: 120px;
-    height: 120px;
-  }
-`;
-
-const Title = styled(motion.h1)`
-  font-size: clamp(2.5rem, 5vw, 3.5rem);
-  line-height: 1.2;
-  margin: 0;
-  font-weight: 700;
-  color: #ffffff;
-  overflow: hidden; /* Para o efeito de reveal */
-
-  span {
-    font-family: "Inter", sans-serif;
-    background: linear-gradient(90deg, #00ffe0 0%, #00bfa6 50%, #00ffe0 100%);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    display: inline-block;
-    
-    animation: gradient-flow 4s linear infinite;
-
-    @keyframes gradient-flow {
-        to {
-            background-position: -200% center;
-        }
-    }
-  }
-`;
-
-const Subtitle = styled(motion.p)`
-  font-size: clamp(1rem, 2vw, 1.25rem);
-  margin: 15px 0 0;
-  max-width: 700px;
-  line-height: 1.6;
-  color: #a0a4ad; /* Melhor contraste */
-  
-  @media screen and (max-width: 768px) {
-    line-height: 1.8;
-  }
-`;
-
-const HighlightText = styled(motion.span)`
-  font-weight: 600;
-  color: #00ffe0;
-  background-color: rgba(0, 255, 224, 0.05);
-  padding: 2px 6px;
-  border-radius: 4px;
-  border: 1px solid rgba(0, 255, 224, 0.1);
-  display: inline-block;
-`;
-
-const ButtonContainer = styled(motion.div)`
+  transform: translateX(-50%);
   display: flex;
-  gap: 20px;
-  margin-top: 30px;
-
-  @media screen and (max-width: 768px) {
-    flex-direction: column;
-    gap: 15px;
-    width: 100%;
-    max-width: 300px;
-  }
-`;
-
-const PrimaryButton = styled(motion.a)`
-  padding: 14px 32px;
-  background: linear-gradient(135deg, #00ffe0 0%, #00bfa6 100%);
-  color: #0f1117;
-  text-decoration: none;
-  border-radius: 12px;
-  font-weight: 700;
-  font-size: 1rem;
-  border: none;
-  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 0.8em;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 255, 224, 0.3);
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  z-index: 2;
 
-  &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(0, 255, 224, 0.4);
-    filter: brightness(1.1);
-  }
-  
-  &:active {
-    transform: translateY(-1px);
-  }
-`;
-
-const SecondaryButton = styled(motion.a)`
-  padding: 14px 32px;
-  background: rgba(255, 255, 255, 0.03);
-  color: #00ffe0;
-  text-decoration: none;
-  border-radius: 12px;
-  font-weight: 600;
-  font-size: 1rem;
-  border: 1px solid rgba(0, 255, 224, 0.3);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.8em;
-  backdrop-filter: blur(5px);
-
-  &:hover {
-    background: rgba(0, 255, 224, 0.1);
-    border-color: #00ffe0;
-    transform: translateY(-3px);
-    box-shadow: 0 4px 15px rgba(0, 255, 224, 0.1);
-  }
-
-  &:active {
-    transform: translateY(-1px);
+  svg {
+    animation: bounce 2s ease-in-out infinite;
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(6px); }
+    }
   }
 `;
 
-// --- Variantes de Animação ---
+// ─── Animation Variants ───────────────────────────────────────────────────────
 
-const containerVariants = {
+const container = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: {
-      staggerChildren: 0.15,
-      delayChildren: 0.3,
-    },
+    transition: { staggerChildren: 0.1, delayChildren: 0.15 },
   },
 };
 
-const textRevealVariants = {
-  hidden: { y: "100%", opacity: 0 },
-  visible: { 
-    y: 0, 
-    opacity: 1,
-    transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] }
-  },
+const item = {
+  hidden: { opacity: 0, y: 22 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } },
 };
 
-const wordVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: { duration: 0.5, ease: "easeOut" }
-  },
-};
+// ─── Component ───────────────────────────────────────────────────────────────
 
-const buttonVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: { duration: 0.5, ease: "easeOut" }
-  },
-};
+const EmailCopy = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+  margin-left: 4px;
 
-// --- Componente Hero ---
+  &:hover {
+    color: var(--accent);
+    background: rgba(59, 130, 246, 0.08);
+  }
+`;
+
+const CopyFeedback = styled(motion.span)`
+  font-size: 0.72rem;
+  color: #22c55e;
+  font-weight: 600;
+  pointer-events: none;
+`;
 
 const Hero = () => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyEmail = () => {
+    navigator.clipboard.writeText("mathias.borges.marques@gmail.com").then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
   return (
     <HeroSection id="home">
-      {/* Elementos Flutuantes de Fundo */}
-      <FloatingElement 
-        style={{ top: '15%', left: '10%', width: '100px', height: '100px' }}
-        animate={{ y: [0, -20, 0], opacity: [0.3, 0.6, 0.3] }}
-        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <FloatingElement 
-        style={{ bottom: '20%', right: '15%', width: '150px', height: '150px' }}
-        animate={{ y: [0, 30, 0], opacity: [0.2, 0.5, 0.2] }}
-        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-      />
+      <GridLine />
 
-      <ContentWrapper>
-        <ImageContainer
-          initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
-          animate={{
-            opacity: 1,
-            scale: 1,
-            rotate: 0
-          }}
-          transition={{
-            duration: 0.8,
-            ease: "backOut"
-          }}
-        >
-          <BackgroundImage
-            src={hero_background}
-            alt="Tech background"
-            animate={{
-              y: [0, -12, 0],
-            }}
-            
-            transition={{
-              duration: 4,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 0.6,
-            }}
-          />
-          <ProfileImage
-            src={just_me_image}
-            alt="Mathias Borges - Desenvolvedor de Software"
-          />
-        </ImageContainer>
+      <LeftContent variants={container} initial="hidden" animate="visible">
+        <StatusBadge variants={item}>
+          <Dot /> Disponível para oportunidades
+        </StatusBadge>
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-        >
-          <div style={{ overflow: 'hidden' }}>
-            <Title variants={textRevealVariants}>
-              Olá, eu sou <motion.span whileHover={{ scale: 1.05 }}>Desenvolvedor de Software</motion.span>
-            </Title>
-          </div>
+        <TagLine variants={item}>Desenvolvedor de Software</TagLine>
 
-          <Subtitle variants={wordVariants}>
-            Criando soluções para{" "}
-            <HighlightText whileHover={{ scale: 1.1, rotate: -2 }} variants={wordVariants}>web</HighlightText>,{" "}
-            <HighlightText whileHover={{ scale: 1.1, rotate: 2 }} variants={wordVariants}>mobile</HighlightText> e{" "}
-            <HighlightText whileHover={{ scale: 1.1, rotate: -2 }} variants={wordVariants}>desktop</HighlightText>
-          </Subtitle>
+        <Name variants={item}>
+          Mathias<br />
+          <BlueWord>Borges</BlueWord>
+        </Name>
 
-          <ButtonContainer variants={containerVariants}>
-            <PrimaryButton
-              href="#projetos"
-              variants={buttonVariants}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              aria-label="Ver meus projetos"
-            >
-              <FiCoffee size={20}/>
-              Ver Projetos
-            </PrimaryButton>
-            <SecondaryButton
-              href="#contato"
-              variants={buttonVariants}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              aria-label="Entrar em contato"
-            >
-              <FiSmartphone size={20}/>
-              Contato
-            </SecondaryButton>
-          </ButtonContainer>
-        </motion.div>
-      </ContentWrapper>
+        <Role variants={item}>
+          Estudante de Ciência da Computação com perfil multidisciplinar.
+          Experiência em sistemas corporativos, web, mobile e automação.
+          Baseado em Maceió, AL.
+        </Role>
+
+        <ButtonRow variants={item}>
+          <PrimaryBtn href="#projetos" whileTap={{ scale: 0.97 }}>
+            Ver projetos
+          </PrimaryBtn>
+          <SecondaryBtn href="#contato" whileTap={{ scale: 0.97 }}>
+            Entrar em contato
+          </SecondaryBtn>
+        </ButtonRow>
+
+        <SocialRow variants={item}>
+          <SocialBtn
+            href="https://github.com/MathiasBorges"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub"
+          >
+            <FiGithub size={17} />
+          </SocialBtn>
+          <SocialBtn
+            href="https://www.linkedin.com/in/mathias-borges-marques/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="LinkedIn"
+          >
+            <FiLinkedin size={17} />
+          </SocialBtn>
+          <EmailCopy onClick={handleCopyEmail} title="Copiar e-mail">
+            {copied ? (
+              <CopyFeedback
+                key="copied"
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+              >
+                E-mail copiado ✓
+              </CopyFeedback>
+            ) : (
+              <span>mathias.borges.marques@gmail.com</span>
+            )}
+          </EmailCopy>
+        </SocialRow>
+      </LeftContent>
+
+      <RightContent>
+        <CanvasWrapper>
+          <Suspense fallback={null}>
+            <Scene3D />
+          </Suspense>
+        </CanvasWrapper>
+      </RightContent>
+
+      <ScrollHint
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.4, duration: 0.6 }}
+      >
+        <FiArrowDown size={16} />
+        scroll
+      </ScrollHint>
     </HeroSection>
   );
 };
