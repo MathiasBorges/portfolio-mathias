@@ -1,6 +1,7 @@
-import React, { useState, useRef } from "react";
+import React, { Suspense, useRef, useState } from "react";
 import styled from "styled-components";
-import { motion, AnimatePresence, useInView } from "framer-motion";
+import { motion, AnimatePresence, useInView, useMotionValue, useSpring } from "framer-motion";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { FiGithub, FiExternalLink, FiChevronLeft, FiChevronRight, FiBriefcase, FiPlay, FiPause, FiX, FiMaximize, FiInfo } from "react-icons/fi";
 import { Link as ScrollLink } from "react-scroll";
 import { projects } from "../data/projects";
@@ -12,6 +13,7 @@ const ProjectsSection = styled.section`
   background: #0a0a0a;
   color: #e2e8f0;
   position: relative;
+  overflow: hidden;
   
   &::before { 
     content: '';
@@ -24,6 +26,19 @@ const ProjectsSection = styled.section`
       radial-gradient(circle at 80% 10%, rgba(59, 130, 246, 0.03) 0%, transparent 50%),
       radial-gradient(circle at 20% 90%, rgba(37, 99, 235, 0.03) 0%, transparent 50%);
     z-index: 0;
+  }
+`;
+
+const ProjectsOrbitalWrap = styled.div`
+  position: absolute;
+  top: 36px;
+  right: 28px;
+  width: 180px;
+  height: 180px;
+  z-index: 1;
+
+  @media (max-width: 900px) {
+    display: none;
   }
 `;
 
@@ -72,9 +87,9 @@ const ProjectCard = styled(motion.div)`
   flex-direction: column;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   position: relative;
+  transform-style: preserve-3d;
   
   &:hover {
-    transform: translateY(-10px);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
     border-color: rgba(59, 130, 246, 0.3);
   }
@@ -86,6 +101,23 @@ const MediaContainer = styled.div`
   aspect-ratio: 16/9;
   background: #000;
   overflow: hidden;
+`;
+
+const CardSignal = styled.div`
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(147, 197, 253, 0.85), rgba(59, 130, 246, 0.16) 45%, transparent 70%),
+    rgba(6, 10, 18, 0.55);
+  border: 1px solid rgba(147, 197, 253, 0.24);
+  box-shadow: 0 0 24px rgba(59, 130, 246, 0.18);
+  backdrop-filter: blur(10px);
+  pointer-events: none;
+  z-index: 2;
 `;
 
 const MediaItem = styled(motion.div)`
@@ -382,12 +414,62 @@ const cardVariants = {
   },
 };
 
+function ProjectsCrystal({ pointer, hovered }) {
+  const groupRef = useRef(null);
+  const coreRef = useRef(null);
+
+  useFrame(({ clock }) => {
+    if (!groupRef.current || !coreRef.current) return;
+
+    const t = clock.getElapsedTime();
+    groupRef.current.rotation.y = t * 0.35 + pointer.x * 0.65;
+    groupRef.current.rotation.x = Math.sin(t * 0.55) * 0.18 + pointer.y * 0.45;
+    groupRef.current.position.y = Math.sin(t * 0.9) * 0.14;
+
+    const targetScale = hovered ? 1.12 : 1;
+    coreRef.current.scale.x += (targetScale - coreRef.current.scale.x) * 0.08;
+    coreRef.current.scale.y += (targetScale - coreRef.current.scale.y) * 0.08;
+    coreRef.current.scale.z += (targetScale - coreRef.current.scale.z) * 0.08;
+  });
+
+  return (
+    <group ref={groupRef}>
+      <mesh ref={coreRef}>
+        <icosahedronGeometry args={[0.95, 0]} />
+        <meshStandardMaterial color="#93c5fd" wireframe transparent opacity={0.85} />
+      </mesh>
+      <mesh rotation={[Math.PI / 2.8, 0, 0]}>
+        <torusGeometry args={[1.5, 0.03, 12, 80]} />
+        <meshStandardMaterial color="#3b82f6" transparent opacity={0.4} />
+      </mesh>
+    </group>
+  );
+}
+
 // --- Componente Individual do Card ---
 
 const ProjectCardComponent = ({ project, onOpenModal }) => {
   const [currentMedia, setCurrentMedia] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const videoRef = useRef(null);
+  const rotateX = useMotionValue(0);
+  const rotateY = useMotionValue(0);
+  const springX = useSpring(rotateX, { stiffness: 180, damping: 18, mass: 0.4 });
+  const springY = useSpring(rotateY, { stiffness: 180, damping: 18, mass: 0.4 });
+
+  const handleCardPointerMove = (event) => {
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const px = (event.clientX - bounds.left) / bounds.width;
+    const py = (event.clientY - bounds.top) / bounds.height;
+
+    rotateY.set((px - 0.5) * 10);
+    rotateX.set((0.5 - py) * 10);
+  };
+
+  const resetCardTilt = () => {
+    rotateX.set(0);
+    rotateY.set(0);
+  };
 
   const nextMedia = (e) => {
     e.preventDefault();
@@ -427,8 +509,16 @@ const ProjectCardComponent = ({ project, onOpenModal }) => {
   };
 
   return (
-    <ProjectCard variants={cardVariants} layout>
+    <ProjectCard
+      variants={cardVariants}
+      layout
+      onMouseMove={handleCardPointerMove}
+      onMouseLeave={resetCardTilt}
+      whileHover={{ y: -10, scale: 1.01 }}
+      style={{ rotateX: springX, rotateY: springY, transformPerspective: 1200 }}
+    >
       <MediaContainer>
+        
         <AnimatePresence mode="wait">
           <MediaItem
             key={currentMedia}
@@ -569,6 +659,21 @@ const Projects = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [selectedProject, setSelectedProject] = useState(null);
+  const [sceneHovered, setSceneHovered] = useState(false);
+  const [scenePointer, setScenePointer] = useState({ x: 0, y: 0 });
+
+  const handleSceneMove = (event) => {
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const x = ((event.clientX - bounds.left) / bounds.width) * 2 - 1;
+    const y = ((event.clientY - bounds.top) / bounds.height) * 2 - 1;
+
+    setScenePointer({ x, y: -y });
+  };
+
+  const resetScene = () => {
+    setSceneHovered(false);
+    setScenePointer({ x: 0, y: 0 });
+  };
 
   const openModal = (project) => {
     setSelectedProject(project);
@@ -582,6 +687,23 @@ const Projects = () => {
 
   return (
     <ProjectsSection id="projetos" ref={ref}>
+      <ProjectsOrbitalWrap onMouseMove={handleSceneMove} onMouseLeave={resetScene}>
+        <Suspense fallback={null}>
+          <Canvas
+            camera={{ position: [0, 0, 4.5], fov: 42 }}
+            dpr={[1, 1.5]}
+            style={{ background: "transparent" }}
+            onPointerEnter={() => setSceneHovered(true)}
+            onPointerLeave={resetScene}
+          >
+            <ambientLight intensity={0.5} />
+            <pointLight position={[3, 3, 4]} intensity={1.1} color="#60a5fa" />
+            <pointLight position={[-4, -3, -4]} intensity={0.4} color="#1d4ed8" />
+            <ProjectsCrystal pointer={scenePointer} hovered={sceneHovered} />
+          </Canvas>
+        </Suspense>
+      </ProjectsOrbitalWrap>
+
       <Container>
         <SectionTitle
           initial={{ opacity: 0, y: -20 }}

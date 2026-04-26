@@ -6,14 +6,20 @@ import { FiGithub, FiLinkedin, FiArrowDown } from "react-icons/fi";
 
 // ─── 3D Scene ────────────────────────────────────────────────────────────────
 
-function WireframeIcosahedron() {
+function WireframeIcosahedron({ pointer, hovered }) {
   const meshRef = useRef();
 
   useFrame(({ clock }) => {
+    if (!meshRef.current) return;
     const t = clock.getElapsedTime();
-    meshRef.current.rotation.x = t * 0.10;
-    meshRef.current.rotation.y = t * 0.14;
-    meshRef.current.position.y = Math.sin(t * 0.6) * 0.14;
+    meshRef.current.rotation.x = t * 0.10 + pointer.y * 0.35;
+    meshRef.current.rotation.y = t * 0.14 + pointer.x * 0.45;
+    meshRef.current.position.y = Math.sin(t * 0.6) * 0.14 + pointer.y * 0.18;
+
+    const targetScale = hovered ? 1.08 : 1;
+    meshRef.current.scale.x += (targetScale - meshRef.current.scale.x) * 0.08;
+    meshRef.current.scale.y += (targetScale - meshRef.current.scale.y) * 0.08;
+    meshRef.current.scale.z += (targetScale - meshRef.current.scale.z) * 0.08;
   });
 
   return (
@@ -24,13 +30,19 @@ function WireframeIcosahedron() {
   );
 }
 
-function OuterRing() {
+function OuterRing({ pointer, hovered }) {
   const ringRef = useRef();
 
   useFrame(({ clock }) => {
+    if (!ringRef.current) return;
     const t = clock.getElapsedTime();
-    ringRef.current.rotation.z = t * 0.08;
-    ringRef.current.rotation.x = Math.sin(t * 0.3) * 0.3;
+    ringRef.current.rotation.z = t * 0.08 - pointer.x * 0.18;
+    ringRef.current.rotation.x = Math.sin(t * 0.3) * 0.3 + pointer.y * 0.16;
+
+    const targetScale = hovered ? 1.04 : 1;
+    ringRef.current.scale.x += (targetScale - ringRef.current.scale.x) * 0.08;
+    ringRef.current.scale.y += (targetScale - ringRef.current.scale.y) * 0.08;
+    ringRef.current.scale.z += (targetScale - ringRef.current.scale.z) * 0.08;
   });
 
   return (
@@ -41,18 +53,20 @@ function OuterRing() {
   );
 }
 
-function Scene3D() {
+function Scene3D({ pointer, hovered, setHovered }) {
   return (
     <Canvas
       camera={{ position: [0, 0, 5.5], fov: 42 }}
       style={{ background: "transparent" }}
       dpr={[1, 2]}
+      onPointerEnter={() => setHovered(true)}
+      onPointerLeave={() => setHovered(false)}
     >
       <ambientLight intensity={0.4} />
       <pointLight position={[5, 5, 5]} intensity={1.2} color="#3b82f6" />
       <pointLight position={[-5, -3, -5]} intensity={0.6} color="#1d4ed8" />
-      <WireframeIcosahedron />
-      <OuterRing />
+      <WireframeIcosahedron pointer={pointer} hovered={hovered} />
+      <OuterRing pointer={pointer} hovered={hovered} />
     </Canvas>
   );
 }
@@ -338,12 +352,27 @@ const CopyFeedback = styled(motion.span)`
 
 const Hero = () => {
   const [copied, setCopied] = useState(false);
+  const [isSceneHovered, setIsSceneHovered] = useState(false);
+  const [pointer, setPointer] = useState({ x: 0, y: 0 });
 
   const handleCopyEmail = () => {
     navigator.clipboard.writeText("mathias.borges.marques@gmail.com").then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
+  };
+
+  const handleScenePointerMove = (event) => {
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const x = ((event.clientX - bounds.left) / bounds.width) * 2 - 1;
+    const y = ((event.clientY - bounds.top) / bounds.height) * 2 - 1;
+
+    setPointer({ x, y: -y });
+  };
+
+  const handleScenePointerLeave = () => {
+    setIsSceneHovered(false);
+    setPointer({ x: 0, y: 0 });
   };
 
   return (
@@ -411,10 +440,14 @@ const Hero = () => {
         </SocialRow>
       </LeftContent>
 
-      <RightContent>
+      <RightContent onMouseMove={handleScenePointerMove} onMouseLeave={handleScenePointerLeave}>
         <CanvasWrapper>
           <Suspense fallback={null}>
-            <Scene3D />
+            <Scene3D
+              pointer={pointer}
+              hovered={isSceneHovered}
+              setHovered={setIsSceneHovered}
+            />
           </Suspense>
         </CanvasWrapper>
       </RightContent>

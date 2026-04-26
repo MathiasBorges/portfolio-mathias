@@ -14,8 +14,17 @@ import optimize_image from "../assets/projetos-assets/projeto-8-optimize.png";
 import optimize_video from "../assets/projetos-assets/projeto-8-optimize.mp4";
 import mellk_image from "../assets/projetos-assets/projeto-9-mellk.png";
 import mellk_video from "../assets/projetos-assets/projeto-9-mellk.mp4";
+import cafe_com_jota_image from "../assets/projetos-assets/projeto-10-cafe-com-jota.png";
 
 export const projects = [
+    {
+      title: "Café Com Jota",
+      description:
+        "Plataforma completa de financiamento coletivo criada para ampliar o impacto de uma iniciativa social local que destina 20% da receita para apoiar pessoas sem-teto e animais abandonados.",
+      media: [{ type: "image", src: cafe_com_jota_image }],
+      link: "https://cafe-com-jota.web.app/",
+      techs: ["React.js", "Firebase", "Mercado Pago", "Crowdfunding"],
+    },
     {
       title: "Mellk",
       description: "Este é um sistema de gestão comercial, desenvolvido para controlar cadastros, vendas, estoque e finanças de forma integrada",

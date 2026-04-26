@@ -1,4 +1,4 @@
-import React, { useRef, Suspense } from "react";
+import React, { useRef, Suspense, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import styled from "styled-components";
 import { Canvas, useFrame } from "@react-three/fiber";
@@ -223,12 +223,18 @@ const FloatCanvasWrap = styled.div`
 function FloatOctahedron() {
   const mesh = useRef();
   const hovered = useRef(false);
+  const pointer = useRef({ x: 0, y: 0 });
 
   useFrame((_, dt) => {
     if (!mesh.current) return;
     const speed = hovered.current ? 3.5 : 0.5;
-    mesh.current.rotation.x += dt * speed * 0.4;
-    mesh.current.rotation.y += dt * speed * 0.6;
+    const pulse = hovered.current ? 1.12 : 1;
+
+    mesh.current.rotation.x += dt * speed * 0.4 + pointer.current.y * dt * 1.1;
+    mesh.current.rotation.y += dt * speed * 0.6 + pointer.current.x * dt * 1.3;
+    mesh.current.scale.x += (pulse - mesh.current.scale.x) * 0.12;
+    mesh.current.scale.y += (pulse - mesh.current.scale.y) * 0.12;
+    mesh.current.scale.z += (pulse - mesh.current.scale.z) * 0.12;
   });
 
   return (
@@ -236,6 +242,12 @@ function FloatOctahedron() {
       ref={mesh}
       onPointerOver={() => { hovered.current = true; }}
       onPointerOut={() => { hovered.current = false; }}
+      onPointerMove={(event) => {
+        pointer.current = {
+          x: event.point.x * 0.18,
+          y: event.point.y * 0.18,
+        };
+      }}
     >
       <octahedronGeometry args={[1.2, 0]} />
       <meshStandardMaterial color="#93c5fd" wireframe transparent opacity={0.9} />
@@ -278,12 +290,19 @@ const textVariants = {
 const About = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const [orbitalGlow, setOrbitalGlow] = useState(0.1);
 
   return (
     <AboutSection id="sobre" ref={ref}>
-      <FloatCanvasWrap>
+      <FloatCanvasWrap style={{ opacity: orbitalGlow }}>
         <Suspense fallback={null}>
-          <Canvas camera={{ position: [0, 0, 3.8], fov: 45 }} dpr={[1, 1.5]} style={{ background: "transparent" }}>
+          <Canvas
+            camera={{ position: [0, 0, 3.8], fov: 45 }}
+            dpr={[1, 1.5]}
+            style={{ background: "transparent" }}
+            onPointerEnter={() => setOrbitalGlow(0.2)}
+            onPointerLeave={() => setOrbitalGlow(0.1)}
+          >
             <ambientLight intensity={0.4} />
             <pointLight position={[3, 3, 3]} intensity={1.2} color="#3b82f6" />
             <FloatOctahedron />
