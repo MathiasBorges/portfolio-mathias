@@ -80,14 +80,19 @@ const HeroSection = styled.section`
   grid-template-columns: 1fr 1fr;
   align-items: center;
   background: var(--bg);
-  padding: 0 8vw;
+  padding: 112px 8vw 0;
   position: relative;
   overflow: hidden;
 
   @media (max-width: 900px) {
     grid-template-columns: 1fr;
-    padding: 110px 24px 60px;
+    padding: 108px 20px 56px;
     text-align: center;
+  }
+
+  @media (max-width: 480px) {
+    min-height: auto;
+    padding: 104px 16px 44px;
   }
 `;
 
@@ -107,6 +112,10 @@ const LeftContent = styled(motion.div)`
   flex-direction: column;
   gap: 24px;
   z-index: 1;
+
+  @media (max-width: 900px) {
+    align-items: center;
+  }
 `;
 
 const PresentationRow = styled(motion.div)`
@@ -117,6 +126,10 @@ const PresentationRow = styled(motion.div)`
   @media (max-width: 900px) {
     justify-content: center;
   }
+
+  @media (max-width: 480px) {
+    gap: 10px;
+  }
 `;
 
 const HeroAvatar = styled.img`
@@ -126,6 +139,11 @@ const HeroAvatar = styled.img`
   object-fit: cover;
   border: 2px solid rgba(59, 130, 246, 0.7);
   box-shadow: 0 0 16px rgba(59, 130, 246, 0.28);
+
+  @media (max-width: 480px) {
+    width: 52px;
+    height: 52px;
+  }
 `;
 
 const PresentationText = styled.div`
@@ -144,6 +162,18 @@ const PresentationText = styled.div`
     color: var(--muted-light);
     font-size: 0.82rem;
     line-height: 1.3;
+  }
+
+  @media (max-width: 480px) {
+    text-align: left;
+
+    strong {
+      font-size: 0.9rem;
+    }
+
+    span {
+      font-size: 0.77rem;
+    }
   }
 `;
 
@@ -192,6 +222,11 @@ const Role = styled(motion.p)`
   @media (max-width: 900px) {
     max-width: 100%;
   }
+
+  @media (max-width: 480px) {
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
 `;
 
 const ButtonRow = styled(motion.div)`
@@ -201,6 +236,15 @@ const ButtonRow = styled(motion.div)`
 
   @media (max-width: 900px) {
     justify-content: center;
+  }
+
+  @media (max-width: 480px) {
+    width: 100%;
+
+    a {
+      width: 100%;
+      justify-content: center;
+    }
   }
 `;
 
@@ -250,6 +294,11 @@ const SocialRow = styled(motion.div)`
   align-items: center;
 
   @media (max-width: 900px) {
+    justify-content: center;
+  }
+
+  @media (max-width: 480px) {
+    flex-wrap: wrap;
     justify-content: center;
   }
 `;
@@ -312,7 +361,7 @@ const RightContent = styled.div`
   z-index: 1;
 
   @media (max-width: 900px) {
-    height: 300px;
+    display: none;
   }
 `;
 
@@ -342,6 +391,12 @@ const ScrollHint = styled(motion.div)`
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(6px); }
     }
+  }
+
+  @media (max-width: 480px) {
+    bottom: 18px;
+    font-size: 0.68rem;
+    gap: 4px;
   }
 `;
 
