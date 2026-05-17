@@ -46,6 +46,10 @@ const NavbarWrapper = styled.div`
   display: flex;
   justify-content: center;
   padding-top: 1.2rem;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    padding-top: 0.7rem;
+  }
 `;
 
 const NavbarContainer = styled(motion.nav)`
@@ -65,6 +69,17 @@ const NavbarContainer = styled(motion.nav)`
   -webkit-backdrop-filter: blur(16px);
   position: relative;
   overflow: hidden;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    width: 96%;
+    padding: 0 1rem;
+    height: 58px;
+  }
+
+  @media (max-width: 480px) {
+    width: 100%;
+    border-radius: 0 0 12px 12px;
+  }
 `;
 
 const ProgressBar = styled(motion.div)`
@@ -101,12 +116,20 @@ const Logo = styled(motion.a)`
     text-shadow: 2px 2px #ff00c1, -2px -2px #00fff9;
     animation: ${glitch} 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
   }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    font-size: 1.25rem;
+  }
 `;
 
 const NavActionContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 1.5rem;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    gap: 0.8rem;
+  }
 `;
 
 const NavLinksDesktop = styled.div`
@@ -177,7 +200,7 @@ const MobileMenuContainer = styled(motion.div)`
   position: fixed;
   top: 0;
   right: 0;
-  width: min(75%, 300px);
+  width: min(88vw, 320px);
   height: 100vh;
   background: #0a0a0a;
   padding: calc(${({ theme }) => theme.navbarHeight} + 1.8rem) 1.8rem;
@@ -186,6 +209,11 @@ const MobileMenuContainer = styled(motion.div)`
   border-left: 1px solid ${({ theme }) => theme.colors.borderLight};
   z-index: 1000;
   box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+
+  @media (max-width: 480px) {
+    width: 100vw;
+    padding: calc(${({ theme }) => theme.navbarHeight} + 1.2rem) 1.2rem;
+  }
 `;
 
 const MobileNavLink = styled(motion.a)`
@@ -206,6 +234,11 @@ const MobileNavLink = styled(motion.a)`
 
   &:last-child {
     border-bottom: none;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.05rem;
+    padding: 1rem 0;
   }
 `;
 

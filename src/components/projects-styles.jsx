@@ -27,6 +27,10 @@ const ProjectsSection = styled.section`
       radial-gradient(circle at 20% 90%, rgba(37, 99, 235, 0.03) 0%, transparent 50%);
     z-index: 0;
   }
+
+  @media (max-width: 480px) {
+    padding: 92px 16px 84px;
+  }
 `;
 
 const ProjectsOrbitalWrap = styled.div`
@@ -64,16 +68,25 @@ const SectionTitle = styled(motion.h2)`
   svg {
     color: #3b82f6;
   }
+
+  @media (max-width: 480px) {
+    margin-bottom: 48px;
+    text-align: center;
+  }
 `;
 
 const ProjectsGrid = styled(motion.div)`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 40px;
   width: 100%;
   
-  @media (max-width: 768px) {
+  @media (max-width: 600px) {
     grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  @media (max-width: 768px) {
     gap: 30px;
   }
 `;
@@ -92,6 +105,10 @@ const ProjectCard = styled(motion.div)`
   &:hover {
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
     border-color: rgba(59, 130, 246, 0.3);
+  }
+
+  @media (max-width: 480px) {
+    border-radius: 16px;
   }
 `;
 
@@ -179,6 +196,10 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+
+  @media (max-width: 480px) {
+    padding: 18px;
+  }
 `;
 
 const ProjectHeader = styled.div`
@@ -193,6 +214,10 @@ const ProjectTitle = styled.h3`
   font-weight: 700;
   color: #ffffff;
   margin: 0;
+
+  @media (max-width: 480px) {
+    font-size: 1.25rem;
+  }
 `;
 
 const ProjectDescription = styled.p`
@@ -201,6 +226,11 @@ const ProjectDescription = styled.p`
   line-height: 1.6;
   margin-bottom: 24px;
   flex-grow: 1;
+
+  @media (max-width: 480px) {
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+  }
 `;
 
 const TechStack = styled.div`
@@ -223,6 +253,11 @@ const LinksContainer = styled.div`
   display: flex;
   gap: 16px;
   margin-top: auto;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    gap: 10px;
+  }
 `;
 
 const ProjectLink = styled(motion.a)`
@@ -238,6 +273,10 @@ const ProjectLink = styled(motion.a)`
   gap: 8px;
   transition: all 0.3s ease;
   cursor: pointer;
+
+  @media (max-width: 480px) {
+    width: 100%;
+  }
 `;
 
 const LiveButton = styled(ProjectLink)`
@@ -290,6 +329,12 @@ const ModalContent = styled(motion.div)`
   flex-direction: column;
   overflow: hidden;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+
+  @media (max-width: 768px) {
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+  }
 `;
 
 const ModalHeader = styled.div`
@@ -299,6 +344,11 @@ const ModalHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  @media (max-width: 768px) {
+    padding: 14px 16px;
+    gap: 12px;
+  }
 `;
 
 const ModalTitle = styled.h3`
@@ -308,11 +358,19 @@ const ModalTitle = styled.h3`
   display: flex;
   align-items: center;
   gap: 10px;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
 `;
 
 const ModalActions = styled.div`
   display: flex;
   gap: 12px;
+
+  @media (max-width: 768px) {
+    gap: 8px;
+  }
 `;
 
 const IconButton = styled(motion.button)`

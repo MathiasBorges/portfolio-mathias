@@ -31,6 +31,10 @@ const ContactSection = styled.section`
       radial-gradient(circle at 80% 20%, rgba(37, 99, 235, 0.03) 0%, transparent 50%);
     z-index: 0;
   }
+
+  @media (max-width: 480px) {
+    padding: 92px 16px 84px;
+  }
 `;
 
 const Container = styled.div`
@@ -43,6 +47,10 @@ const Container = styled.div`
   position: relative;
   z-index: 1;
 
+  @media (max-width: 480px) {
+    align-items: stretch;
+  }
+
 `;
 
 const TitleContainer = styled.div`
@@ -54,6 +62,11 @@ const TitleContainer = styled.div`
   svg {
     color: #3b82f6;
   }
+
+  @media (max-width: 480px) {
+    margin-bottom: 40px;
+    gap: 12px;
+  }
 `;
 
 const SectionTitle = styled(motion.h2)`
@@ -61,6 +74,10 @@ const SectionTitle = styled(motion.h2)`
   font-weight: 700;
   color: #ffffff;
   margin: 0;
+
+  @media (max-width: 480px) {
+    font-size: 1.7rem;
+  }
 `;
 
 const ContactContent = styled(motion.div)`
@@ -73,6 +90,10 @@ const ContactContent = styled(motion.div)`
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
     gap: 32px;
+  }
+
+  @media (max-width: 480px) {
+    gap: 24px;
   }
 `;
 
@@ -87,6 +108,12 @@ const ContactForm = styled(motion.form)`
   backdrop-filter: blur(10px);
   border: 1px solid rgba(59, 130, 246, 0.1);
   position: relative;
+
+  @media (max-width: 480px) {
+    padding: 24px 18px;
+    border-radius: 16px;
+    gap: 18px;
+  }
   
 `;
 
@@ -166,6 +193,10 @@ const SubmitButton = styled(motion.button)`
   justify-content: center;
   gap: 8px;
   min-height: 56px;
+
+  @media (max-width: 480px) {
+    width: 100%;
+  }
 
   &::before {
     content: "";
@@ -278,6 +309,12 @@ const ContactInfo = styled(motion.div)`
   @media (max-width: 768px) {
     align-self: center;
   }
+
+  @media (max-width: 480px) {
+    padding: 24px 18px;
+    border-radius: 16px;
+    gap: 24px;
+  }
 `;
 
 const InfoTitle = styled.h3`
@@ -323,6 +360,11 @@ const SocialLink = styled(motion.a)`
     font-size: 1.4rem;
     color: #3b82f6;
     transition: all 0.3s ease;
+  }
+
+  @media (max-width: 480px) {
+    padding: 14px 16px;
+    gap: 12px;
   }
 `;
 

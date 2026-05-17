@@ -25,6 +25,11 @@ const GlobalStyle = createGlobalStyle`
 
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 100px;
+  }
+
+  section[id] {
+    scroll-margin-top: 100px;
   }
 
   body {
