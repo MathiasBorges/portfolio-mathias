@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { motion } from "framer-motion";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { FiGithub, FiLinkedin, FiArrowDown } from "react-icons/fi";
+import myImage from "../assets/me.jpeg";
 
 // ─── 3D Scene ────────────────────────────────────────────────────────────────
 
@@ -106,6 +107,44 @@ const LeftContent = styled(motion.div)`
   flex-direction: column;
   gap: 24px;
   z-index: 1;
+`;
+
+const PresentationRow = styled(motion.div)`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  @media (max-width: 900px) {
+    justify-content: center;
+  }
+`;
+
+const HeroAvatar = styled.img`
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(59, 130, 246, 0.7);
+  box-shadow: 0 0 16px rgba(59, 130, 246, 0.28);
+`;
+
+const PresentationText = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  strong {
+    color: var(--text);
+    font-size: 0.96rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  span {
+    color: var(--muted-light);
+    font-size: 0.82rem;
+    line-height: 1.3;
+  }
 `;
 
 const TagLine = styled(motion.div)`
@@ -383,6 +422,14 @@ const Hero = () => {
         <StatusBadge variants={item}>
           <Dot /> Disponível para oportunidades
         </StatusBadge>
+
+        <PresentationRow variants={item}>
+          <HeroAvatar src={myImage} alt="Avatar de Mathias Borges" />
+          <PresentationText>
+            <strong>Mathias Borges</strong>
+            <span>Estudante de Ciência da Computação e Desenvolvedor de Software</span>
+          </PresentationText>
+        </PresentationRow>
 
         <TagLine variants={item}>Desenvolvedor de Software</TagLine>
 

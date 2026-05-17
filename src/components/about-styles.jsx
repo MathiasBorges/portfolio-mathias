@@ -334,10 +334,10 @@ const About = () => {
 
           <TextContent variants={textVariants}>
             <p>
-              Sou um desenvolvedor apaixonado por tecnologia e resolução de problemas. Atuo tanto no <Highlight whileHover={{ scale: 1.1, backgroundColor: "rgba(59, 130, 246, 0.25)" }}>Front-end</Highlight> quanto no <Highlight whileHover={{ scale: 1.1, backgroundColor: "rgba(59, 130, 246, 0.25)" }}>Back-end</Highlight>, sempre buscando evoluir e entregar soluções eficientes.
+              Sou estudante de <Highlight whileHover={{ scale: 1.1, backgroundColor: "rgba(59, 130, 246, 0.25)" }}>Ciência da Computação</Highlight>, com formação técnica em programação e atuação prática em projetos de software. Minha principal área de interesse é o desenvolvimento <Highlight whileHover={{ scale: 1.1, backgroundColor: "rgba(59, 130, 246, 0.25)" }}>Front-end</Highlight> e <Highlight whileHover={{ scale: 1.1, backgroundColor: "rgba(59, 130, 246, 0.25)" }}>Back-end</Highlight>, criando soluções web e desktop com foco em usabilidade e desempenho.
             </p>
             <p>
-              Tenho experiência liderando e colaborando em projetos diversos, utilizando metodologias ágeis como o <Highlight whileHover={{ scale: 1.1, backgroundColor: "rgba(59, 130, 246, 0.25)" }}>Scrum</Highlight>. Busco criar experiências digitais que geram impacto e valor.
+              O que me motivou a estudar tecnologia foi a possibilidade de transformar ideias em soluções reais que ajudam pessoas e negócios no dia a dia. Desde então, venho evoluindo com constância, colaborando em equipe e aplicando metodologias ágeis como <Highlight whileHover={{ scale: 1.1, backgroundColor: "rgba(59, 130, 246, 0.25)" }}>Scrum</Highlight> para entregar valor de forma organizada.
             </p>
             <ContactButton
               href="#contato"
